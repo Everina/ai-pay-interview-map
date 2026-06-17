@@ -1,0 +1,1735 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 付实测：Agent 交易可信网关</title>
+  <style>
+    :root {
+      --bg: #F5F4F0;
+      --panel: #FFFFFF;
+      --panel-2: #FAFAF7;
+      --line: #DDDBD4;
+      --text: #111111;
+      --muted: #555555;
+      --weak: #999999;
+      --cyan: #1677FF;
+      --pink: #D07000;
+      --green: #4D976C;
+      --yellow: #D07000;
+      --blue: #1677FF;
+      --red: #1677FF;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: 'Inter', 'Noto Sans SC', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::-webkit-scrollbar { width: 3px; height: 3px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+    a { color: inherit; }
+
+    .shell {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px 80px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 28px;
+      margin-top: 0;
+      min-height: 0;
+      align-items: start;
+      padding: 52px 0 56px;
+      border-bottom: 0;
+    }
+
+    .hero-main, .hero-side, .section {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      backdrop-filter: none;
+      box-shadow: none;
+    }
+
+    .hero-main {
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-main:after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      display: none;
+    }
+
+    .eyebrow {
+      color: var(--weak);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+    }
+
+    h1 {
+      margin: 12px 0 14px;
+      font-size: clamp(36px, 3.9vw, 58px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(to top, rgba(22, 119, 255, 0.22) 0 42%, transparent 42% 100%);
+      -webkit-background-clip: initial;
+      background-clip: initial;
+      color: var(--text);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      width: 100%;
+      max-width: none;
+      font-size: clamp(15px, 1.45vw, 19px);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .highlight {
+      color: var(--text);
+      font-weight: 800;
+      background: linear-gradient(to top, rgba(22, 119, 255, 0.18) 0 48%, transparent 48% 100%);
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    .hero-side {
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      align-content: start;
+    }
+
+    .metric {
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .metric b {
+      display: block;
+      font-size: clamp(20px, 2vw, 24px);
+      line-height: 1.12;
+      color: var(--text);
+      letter-spacing: -0.6px;
+      margin-bottom: 10px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .section {
+      margin-top: 18px;
+      padding: 64px 0 0;
+      border-top: 1px solid var(--line);
+    }
+
+    #trial {
+      border-top: 0;
+    }
+
+    .section h2 {
+      margin: 0 0 18px;
+      font-size: clamp(34px, 4.5vw, 64px);
+      line-height: 0.96;
+      letter-spacing: -2px;
+      font-weight: 900;
+    }
+
+    .section p {
+      color: var(--muted);
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .cards.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 24px;
+      min-height: 132px;
+    }
+
+    .card .tag {
+      color: var(--weak);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .card p {
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .issue-groups {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+      align-items: stretch;
+    }
+
+    .issue-group {
+      display: grid;
+      gap: 10px;
+      grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .issue-group h3 {
+      margin: 0;
+      color: var(--text);
+      font-size: 16px;
+      letter-spacing: -0.2px;
+    }
+
+    .issue-group .card {
+      min-height: 0;
+      height: 100%;
+      padding: 20px;
+    }
+
+    .issue-group .card .tag {
+      margin-bottom: 8px;
+    }
+
+    .ecosystem-callout {
+      margin-top: 14px;
+      border: 1px solid rgba(22, 119, 255, 0.22);
+      border-radius: var(--radius);
+      background: rgba(22, 119, 255, 0.06);
+      padding: 18px;
+    }
+
+    .ecosystem-callout h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      letter-spacing: -0.25px;
+    }
+
+    .ecosystem-callout p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .ecosystem-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .ecosystem-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      padding: 14px;
+    }
+
+    .ecosystem-item b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .ecosystem-item span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .chain-block {
+      margin-top: 22px;
+    }
+
+    .chain-block h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      letter-spacing: -0.2px;
+    }
+
+    .chain-block p {
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .node {
+      min-height: 96px;
+      padding: 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      position: relative;
+    }
+
+    .node:not(:last-child):after {
+      content: "→";
+      position: absolute;
+      right: -10px;
+      top: 36px;
+      color: var(--cyan);
+      z-index: 1;
+    }
+
+    .node b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .node span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .case-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .case-panel h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      letter-spacing: -0.3px;
+    }
+
+    .case-panel ul,
+    .case-panel ol {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 13px;
+    }
+
+    .case-panel li + li {
+      margin-top: 6px;
+    }
+
+    .case-panel strong {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .compare-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 22px;
+    }
+
+    .compare-panel h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      letter-spacing: -0.3px;
+    }
+
+    .compare-panel p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .compare-panel ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.75;
+    }
+
+    .compare-panel li + li {
+      margin-top: 6px;
+    }
+
+    .compare-panel strong {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .infra-callout {
+      margin-top: 18px;
+      border: 1px solid rgba(22, 119, 255, 0.24);
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(22, 119, 255, 0.08), rgba(255, 255, 255, 0.76));
+      padding: 22px;
+    }
+
+    .infra-kicker {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .infra-callout h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      letter-spacing: -0.4px;
+    }
+
+    .infra-callout p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+
+    .infra-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .infra-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      padding: 18px;
+    }
+
+    .infra-card b {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+      letter-spacing: -0.2px;
+    }
+
+    .infra-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .case-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .case-stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      padding: 18px;
+    }
+
+    .case-stat b {
+      display: block;
+      font-size: 24px;
+      line-height: 1;
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
+    }
+
+    .case-stat span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .io-pack {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .io-block {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 18px;
+    }
+
+    .io-block h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      letter-spacing: -0.2px;
+    }
+
+    .io-block pre {
+      margin: 10px 0 0;
+      padding: 12px;
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: var(--radius);
+      background: #FAFAF7;
+      color: var(--muted);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 0;
+      margin-top: 18px;
+      position: relative;
+      border-top: 1px solid var(--line);
+    }
+
+    .timeline:before {
+      content: "";
+      position: absolute;
+      left: 27px;
+      top: 32px;
+      bottom: 32px;
+      width: 1px;
+      background: var(--line);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 22px;
+      position: relative;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .timeline-dot {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 1px solid var(--text);
+      background: var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 900;
+      z-index: 1;
+    }
+
+    .timeline-card {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+    }
+
+    .timeline-card summary {
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .timeline-card summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .timeline-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .timeline-head strong {
+      display: block;
+      font-size: 17px;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+
+    .timeline-head span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .timeline-status {
+      color: var(--green);
+      border: 1px solid rgba(77, 151, 108, 0.32);
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .timeline-body {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+      gap: 18px;
+      margin-top: 14px;
+    }
+
+    .timeline-body pre {
+      position: relative;
+      margin: 0;
+      padding: 38px 15px 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(250, 250, 247, 0.72);
+      color: var(--muted);
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .timeline-body pre::before {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      color: var(--weak);
+      font-family: 'Inter', 'Noto Sans SC', ui-sans-serif, system-ui, sans-serif;
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0.18em;
+    }
+
+    .timeline-body pre:nth-of-type(1)::before {
+      content: "INPUT";
+    }
+
+    .timeline-body pre:nth-of-type(2)::before {
+      content: "OUTPUT";
+    }
+
+    .timeline-shot {
+      grid-column: 2;
+      border: 1px solid rgba(17, 17, 17, 0.08);
+      border-radius: var(--radius);
+      background: #FAFAF7;
+      padding: 12px;
+    }
+
+    .timeline-shot img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .timeline-shot span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .a402-proof {
+      display: grid;
+      gap: 12px;
+    }
+
+    .proof-summary {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(250, 250, 247, 0.72);
+      padding: 38px 15px 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .proof-summary::before {
+      content: "OUTPUT";
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      color: var(--weak);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0.18em;
+    }
+
+    .proof-summary b {
+      color: var(--text);
+    }
+
+    .proof-summary ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .proof-summary li + li {
+      margin-top: 4px;
+    }
+
+    .flip-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .flip-card {
+      min-height: 300px;
+      perspective: 1200px;
+      outline: none;
+    }
+
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      min-height: 300px;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+    }
+
+    .flip-card:hover .flip-inner,
+    .flip-card:focus .flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      padding: 16px;
+      backface-visibility: hidden;
+      overflow: hidden;
+    }
+
+    .flip-face.back {
+      transform: rotateY(180deg);
+      padding: 10px;
+      background: #F7F7F4;
+    }
+
+    .flip-face .tag {
+      color: var(--weak);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .flip-face strong {
+      display: block;
+      margin: 10px 0 8px;
+      font-size: 17px;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .flip-face p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .flip-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .flip-meta span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 8px;
+      color: var(--muted);
+      font-size: 11px;
+      background: var(--panel-2);
+    }
+
+    .flip-face.back img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: calc(var(--radius) - 2px);
+      background: #fff;
+    }
+
+    .flip-hint {
+      margin-top: 10px;
+      color: var(--weak);
+      font-size: 11px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.72);
+      white-space: nowrap;
+    }
+
+    .pill.high { color: var(--green); border-color: rgba(8, 127, 91, 0.32); }
+    .pill.mid { color: var(--yellow); border-color: rgba(208, 112, 0, 0.32); }
+    .pill.low { color: var(--pink); border-color: rgba(208, 112, 0, 0.32); }
+    .pill.infer { color: var(--cyan); border-color: rgba(22, 119, 255, 0.32); }
+
+    .table-wrap {
+      margin-top: 16px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      max-height: 76vh;
+      background: var(--panel);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1480px;
+      border-collapse: collapse;
+      background: var(--panel);
+    }
+
+    th, td {
+      border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+      border-right: 1px solid rgba(17, 17, 17, 0.06);
+      padding: 12px;
+      vertical-align: top;
+      text-align: left;
+      line-height: 1.55;
+      font-size: 13px;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #FAFAF7;
+      color: var(--text);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td:first-child {
+      font-weight: 800;
+      color: var(--text);
+      width: 180px;
+    }
+
+    td:nth-child(2) { width: 150px; }
+    td:nth-child(5) { width: 260px; }
+    td:nth-child(9) { width: 170px; }
+
+    code {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(17, 17, 17, 0.1);
+      background: #FAFAF7;
+      color: var(--text);
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 12px;
+      max-width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .note {
+      border-left: 3px solid var(--pink);
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.72);
+      border-left-color: var(--cyan);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-side { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .issue-groups { grid-template-columns: 1fr; }
+      .cards.three { grid-template-columns: 1fr; }
+      .case-grid { grid-template-columns: 1fr; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .infra-grid { grid-template-columns: 1fr; }
+      .ecosystem-grid { grid-template-columns: 1fr; }
+      .case-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .io-pack { grid-template-columns: 1fr; }
+      .timeline-body { grid-template-columns: 1fr; }
+      .flip-grid { grid-template-columns: 1fr; }
+      .timeline-shot { grid-column: 1; }
+      .flow { grid-template-columns: repeat(6, 180px); }
+    }
+
+    @media (max-width: 620px) {
+      .shell { padding: 18px 12px 36px; }
+      .hero-main { padding: 0; }
+      .cards { grid-template-columns: 1fr; }
+      .cards.three { grid-template-columns: 1fr; }
+      .case-strip { grid-template-columns: 1fr; }
+      .timeline-item { grid-template-columns: 52px 1fr; gap: 12px; }
+      .timeline:before { left: 22px; }
+      .timeline-dot { width: 44px; height: 44px; }
+      h1 { font-size: 32px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section id="thesis" class="hero">
+      <div class="hero-main">
+        <div class="eyebrow">AI Payment PM Interview Map</div>
+        <h1>从 0.01 元 A402 实测<br>看 <span class="gradient-text">AI 付</span> 成为 Agent 交易可信网关</h1>
+        <p class="subtitle">
+          我会把 AI 付定义成面向智能体交易的<span class="highlight">信任和工具协议层</span>。支付宝做 AI 化的优势不只在支付，而在<span class="highlight">平台型服务网络</span>：Agent 可以把支付、医保、政务、商户和生活服务这些散点能力重新编排成任务型服务。
+          这次 0.01 元 A402 demo 验证的是一个<span class="highlight">最小可信交易闭环</span>；由此我判断，AI 付真正值得做大的方向不是支付按钮，而是 <span class="highlight">Agent Payment Runtime</span>，也就是把授权、预算、确认、支付、履约、风控和追责统一成<span class="highlight">可信动作网关</span>。
+        </p>
+      </div>
+      <aside class="hero-side">
+        <div class="metric">
+          <b>01 为什么是支付宝</b>
+          <span>它不是单一支付工具，而是账号、支付、商户、服务履约和风控组成的平台网络。Agent 编排越复杂，这种网络越有价值。</span>
+        </div>
+        <div class="metric">
+          <b>02 AI 付切哪一层</b>
+          <span>核心不是付款按钮，而是高风险动作网关：当 Agent 替用户花钱、授权或签约时，统一做意图校验、预算边界、确认、执行和审计。</span>
+        </div>
+        <div class="metric">
+          <b>03 壁垒怎么形成</b>
+          <span>如果 A402、Skill/MCP、沙箱和能力市场先连成体系，支付宝就不只是能力提供者，而是在定义 Agent 商业交易的基础规则。</span>
+        </div>
+      </aside>
+    </section>
+
+    <section id="trial" class="section">
+      <h2>01 单点 Skill 试跑</h2>
+      <p>
+        这次实测选择支付宝官方 0.01 元 demo 的 A402 / HTTP 402 支付链路：先做 Dry Run，再完成钱包开通、Payment-Needed 账单处理、0.01 元支付待确认、支付状态查询、资源获取和履约回执。重点不是金额，而是验证 Agent 能否在高风险动作里遵守边界。
+      </p>
+      <div class="case-strip">
+        <div class="case-stat">
+          <b>0.01 CNY</b>
+          <span>官方 demo 资源返回 HTTP 402，商品为支付宝 AI 支付介绍，金额极小，适合首次实测。</span>
+        </div>
+        <div class="case-stat">
+          <b>闭环完成</b>
+          <span>支付后资源返回 200，并成功发送买家履约回执，A402 链路从账单到履约跑通。</span>
+        </div>
+        <div class="case-stat">
+          <b>15m27s</b>
+          <span>从安装支付宝 Skill、Dry Run 到真实支付闭环的可见总时长约 15 分 27 秒；真实 A402 后半段约 11 分 33 秒。</span>
+        </div>
+        <div class="case-stat">
+          <b>70k-80k</b>
+          <span>可见 transcript token 粗估约 7-8 万。对单笔 0.01 元交易来说偏高，主要被安装、排障和长工具输出放大。</span>
+        </div>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot">A</div>
+          <details class="timeline-card" open>
+            <summary>
+              <div class="timeline-head">
+                <div>
+                  <strong>Dry Run 先行</strong>
+                  <span>先验证 Skill 是否会主动带出边界：不真实付款、不生成二维码、不提交 paymentProof，只列命令和确认点。</span>
+                </div>
+                <span class="timeline-status">边界通过</span>
+              </div>
+            </summary>
+            <div class="timeline-body">
+              <pre>请模拟一次支付宝 AI 支付流程，但不要真实付款。
+如果需要支付，只展示你将要执行的命令和需要我确认的信息。</pre>
+              <pre>- 主动声明先 check-wallet。
+- Payment-Needed 不解码、不改写、不截断。
+- 402-buyer-pay 只展示，不执行。
+- 支付链接/二维码输出后必须停住。
+- 用户说“已支付”后才查询状态并发送履约回执。</pre>
+            </div>
+          </details>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot">B</div>
+          <details class="timeline-card" open>
+            <summary>
+              <div class="timeline-head">
+                <div>
+                  <strong>真实 A402 官方 demo</strong>
+                  <span>使用 <code>https://aipayapi.alipay.com/merchant/aipay/introduce</code>，从 402 账单到 0.01 元支付，再到资源获取和 ack。</span>
+                </div>
+                <span class="timeline-status">已跑通</span>
+              </div>
+            </summary>
+            <div class="timeline-body">
+              <pre>你现在要帮我跑通支付宝官方 0.01 元 demo 的 A402 / HTTP 402 支付链路。
+
+目标：
+使用支付宝官方 demo 资源完成一次最小真实链路验证：
+资源 URL：
+https://aipayapi.alipay.com/merchant/aipay/introduce</pre>
+              <div class="a402-proof">
+                <div class="proof-summary">
+                  <ul>
+                    <li><b>HTTP/2 402</b>：官方 demo 返回 Payment-Needed，金额识别为 0.01 CNY。</li>
+                    <li><b>钱包授权</b>：未开通时没有绕过授权，而是生成支付宝开通二维码并等待用户完成。</li>
+                    <li><b>支付确认</b>：钱包开启后生成 0.01 元支付待确认订单，交易号 20260617008281121042710000017237。</li>
+                    <li><b>履约闭环</b>：用户支付后资源返回 200，并成功发送 buyer fulfillment ack。</li>
+                  </ul>
+                </div>
+                <div class="flip-grid">
+                  <div class="flip-card" tabindex="0" aria-label="翻转查看钱包开通二维码">
+                    <div class="flip-inner">
+                      <div class="flip-face front">
+                        <div>
+                          <span class="tag">Wallet Auth</span>
+                          <strong>钱包开通二维码</strong>
+                          <p>证明 Agent 在付款前先进入授权流程，没有直接越过用户钱包开通与绑定。</p>
+                        </div>
+                        <div>
+                          <div class="flip-meta">
+                            <span>未开通时停住</span>
+                            <span>支付宝 App 扫码</span>
+                            <span>授权后继续</span>
+                          </div>
+                          <div class="flip-hint">悬停或聚焦查看已失效真实二维码</div>
+                        </div>
+                      </div>
+                      <div class="flip-face back">
+                        <img src="assets/wallet-bind-real.png" alt="钱包开通真实二维码截图">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flip-card" tabindex="0" aria-label="翻转查看0.01元支付二维码">
+                    <div class="flip-inner">
+                      <div class="flip-face front">
+                        <div>
+                          <span class="tag">Payment Confirm</span>
+                          <strong>0.01 元支付确认</strong>
+                          <p>证明支付入口生成后仍停在用户确认节点，Agent 只在用户支付后继续查状态和拉取资源。</p>
+                        </div>
+                        <div>
+                          <div class="flip-meta">
+                            <span>支付待确认</span>
+                            <span>0.01 CNY</span>
+                            <span>资源返回 200</span>
+                          </div>
+                          <div class="flip-hint">悬停或聚焦查看已失效真实二维码</div>
+                        </div>
+                      </div>
+                      <div class="flip-face back">
+                        <img src="assets/payment-real.png" alt="0.01 元支付真实二维码截图">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+      <div class="note">
+        Token 判断：这次 Codex 可见消耗约 7-8 万 tokens，真实 API 侧总消耗可能更高。作为首次接入、安装和排障可以理解；但如果每笔小额支付都要消耗这个量级，商业上明显偏高，必须通过 Hosted Gateway、缓存、结构化输出和更短 Skill 上下文降本。
+      </div>
+    </section>
+
+    <section id="issues" class="section">
+      <h2>02 试跑暴露的问题</h2>
+      <p>
+        这次实测暴露的不是支付底座能不能用，而是平台服务被 Agent 重新编排时，运行环境、工具调用、状态停顿、用户确认和成本控制都会影响最终体验。把这些工程现象翻译成产品命题，才是 AI 付 PM 更需要回答的问题。
+      </p>
+      <div class="issue-groups">
+        <div class="issue-group">
+          <h3>一、运行与接入</h3>
+          <article class="card">
+            <span class="tag">Consistency</span>
+            <strong>跨框架一致性不足</strong>
+            <p>Codex 跑通了完整 CLI 链路，但经历 npm 源、TLS/CA、安装器、临时依赖等排障。Coze 运行更快的观察，应该被设计成同题基准测试。</p>
+          </article>
+          <article class="card">
+            <span class="tag">Developer</span>
+            <strong>开发者接入路径仍偏重</strong>
+            <p>CLI、证书、沙箱、MCP、Skill 包、能力市场、网关日志都很重要，但需要被包装成更低摩擦的一站式路径。</p>
+          </article>
+        </div>
+        <div class="issue-group">
+          <h3>二、交易控制</h3>
+          <article class="card">
+            <span class="tag">State Machine</span>
+            <strong>高风险动作需要标准状态机</strong>
+            <p>支付、授权、签约、预约、提交材料都不能只靠对话文本推进。产品层需要统一表达未授权、待确认、处理中、履约成功和异常补偿。</p>
+          </article>
+          <article class="card">
+            <span class="tag">Authorization</span>
+            <strong>授权与预算边界要显性化</strong>
+            <p>Agent 不能只知道“要付款”，还要知道预算、商户、资源、有效期、次数、撤销和二次确认条件。否则自动化越强，越容易越权。</p>
+          </article>
+        </div>
+        <div class="issue-group">
+          <h3>三、商业闭环</h3>
+          <article class="card">
+            <span class="tag">Fulfillment</span>
+            <strong>支付成功不等于任务成功</strong>
+            <p>真正闭环还包括资源获取、履约回执、退款、补偿和问题反馈。AI 付要记录“为什么允许付款”和“付款后服务是否完成”。</p>
+          </article>
+          <article class="card">
+            <span class="tag">Unit Economics</span>
+            <strong>单位交易成本需要下降</strong>
+            <p>这次可见 token 粗估 7-8 万，对 0.01 元 demo 交易明显偏高。生产态必须通过 Hosted Runtime、缓存和结构化输出降本。</p>
+          </article>
+        </div>
+      </div>
+      <div class="note">
+        关于 Codex vs Coze：目前只能写成观察和假设，不能直接得出“Coze 支付适配更好”的结论。更严谨的评估需要同一 prompt、同一资源、同一网络条件下记录 5 个指标：首次 402 耗时、钱包授权耗时、支付待确认生成耗时、支付后查询耗时、失败重试次数。
+      </div>
+    </section>
+
+    <section id="actions" class="section">
+      <h2>03 产品设计展望</h2>
+      <p>
+        如果我是这个方向的 PM，我不会把未来只定义成“支付工具优化”。payment-skills 验证的是一类高风险动作节点如何被 Agent 约束执行；更大的机会，是把这套授权、确认、履约、追责范式扩展到支付宝整体服务生态，让 Agent 能编排支付、医保、政务、商户、生活服务等多类任务。
+      </p>
+      <div class="infra-callout">
+        <div class="infra-kicker">Agent Infrastructure 7 / 8</div>
+        <h3>支付宝最有优势的位置，是动作网关与真实世界副作用治理</h3>
+        <p>
+          从 Agent Infrastructure 拆层看，很多模型公司和 Agent 平台更容易先做 Runtime、Skill/MCP 和工具执行层；但真正难、也最需要信任资产的是 7「Action Gateway」和 8「External side effects」。7 决定一个高风险动作能不能放行，8 承接放行后的资金、消息、商户履约和第三方系统影响。支付宝天然站在这两个层之间，所以 AI 付不只是支付入口，而是 Agent 时代的可信动作基础设施。
+        </p>
+        <div class="infra-grid">
+          <div class="infra-card">
+            <b>7 Action Gateway：动作放行权</b>
+            <span>意图校验、风险评估、预算/限额、二次确认、人审/会签、幂等去重、审计日志，这些正是支付与授权场景最需要标准化的平台能力。</span>
+          </div>
+          <div class="infra-card">
+            <b>8 External Side Effects：真实副作用域</b>
+            <span>资金划转、商户履约、退款申诉、消息通知、政务/医保/生活服务提交都不可随意回滚。支付宝的账户、风控、商户网络和履约经验构成独家优势。</span>
+          </div>
+        </div>
+      </div>
+      <div class="compare-grid">
+        <article class="compare-panel">
+          <h3>相似：都是可信动作编排</h3>
+          <p>支付链路不是孤立能力，而是一个可复用的动作范式：用户给出意图，Agent 编排工具，平台校验授权与边界，执行外部动作，最后记录结果。</p>
+          <ul>
+            <li><strong>共同状态：</strong>未授权、待确认、处理中、履约成功、异常补偿。</li>
+            <li><strong>共同约束：</strong>预算/范围/有效期/二次确认/撤销入口。</li>
+            <li><strong>共同证据：</strong>意图、授权、工具调用、网关响应、履约结果、责任归属。</li>
+          </ul>
+        </article>
+        <article class="compare-panel">
+          <h3>区别：整体生态多了服务协同</h3>
+          <p>从支付扩展到支付宝生态后，难点不只是“能不能扣钱”，而是 Agent 如何发现服务、组合服务、处理跨主体授权，并对真实履约负责。</p>
+          <ul>
+            <li><strong>对象更广：</strong>从付款扩展到医保查询、政务提交、商家预约、退款申诉、生活缴费。</li>
+            <li><strong>链路更长：</strong>支付是关键动作节点，生态编排还包含服务发现、材料收集、商家履约、售后补偿。</li>
+            <li><strong>责任更复杂：</strong>用户、Agent、平台、商户、ISV、模型与工具链都可能进入责任划分。</li>
+          </ul>
+        </article>
+      </div>
+      <div class="chain-block">
+        <h3>产品链路：从用户意图到记录追责</h3>
+        <p>把它当作一条交易协议链，而不是一个按钮。这个链路图用于回答追问：AI 付到底把传统支付能力放在 Agent 任务里的哪个位置。</p>
+        <div class="flow">
+          <div class="node"><b>用户意图</b><span>一句话、预算、偏好、收货/服务上下文。</span></div>
+          <div class="node"><b>Agent 编排</b><span>选择 Skill、MCP、知识库、子 Agent 或 A2A 能力。</span></div>
+          <div class="node"><b>授权与约束</b><span>应用授权、资源授权、商户/ISV 授权、预算边界。</span></div>
+          <div class="node"><b>协议网关</b><span>OpenAPI / MCP / UGW / 沙箱服务，做鉴权、参数、日志。</span></div>
+          <div class="node"><b>支付产品</b><span>JSAPI、当面付、订阅、扣款、分账、预授权、转账。</span></div>
+          <div class="node"><b>记录追责</b><span>交易记录、网关响应、风控、异步通知、结算账单。</span></div>
+        </div>
+      </div>
+      <div class="case-grid">
+        <article class="case-panel">
+          <h3>近期：把支付节点跑稳</h3>
+          <ul>
+            <li>稳定 payment-skills 与官方 A402 demo，减少安装、网络、证书和环境排障。</li>
+            <li>做 Codex、Coze、OpenClaw、Kimi、通义等跨框架基准测试。</li>
+            <li>建立风险探针集：超预算、参数篡改、重复支付、授权缺失、履约失败。</li>
+          </ul>
+        </article>
+        <article class="case-panel">
+          <h3>中期：沉淀可信动作 Runtime</h3>
+          <ul>
+            <li>把 CLI 安装、账单保存、签名校验、重试、查询状态上收到 Hosted Gateway。</li>
+            <li>把支付、授权、签约、预约、提交材料抽象成统一的高风险动作状态机。</li>
+            <li>沉淀审计字段：用户意图、预算、服务主体、资源、tradeNo、履约结果。</li>
+          </ul>
+        </article>
+      </div>
+      <div class="ecosystem-callout">
+        <h3>生态建设：不是全量开放，而是可信供给分层</h3>
+        <p>
+          AI 付要做大，不能只解决工具能不能接入，还要解决哪些商户、服务和 Skill 值得被 Agent 调用。尤其涉及支付、签约、授权这类高风险动作时，生态建设的第一步不是无限开放，而是用白名单和分层准入先保证供给质量，再逐步扩大覆盖。
+        </p>
+        <div class="ecosystem-grid">
+          <div class="ecosystem-item">
+            <b>优质供给</b>
+            <span>优先引入履约能力强、服务标准清晰、售后路径明确的商户和 ISV，让 Agent 任务先在高确定性场景跑通。</span>
+          </div>
+          <div class="ecosystem-item">
+            <b>白名单准入</b>
+            <span>高风险动作先走白名单：能力、商户、场景、金额、用户范围都可控，避免一上来被低质服务和误调用放大风险。</span>
+          </div>
+          <div class="ecosystem-item">
+            <b>分层治理</b>
+            <span>从白名单到灰度到开放市场，用成功率、投诉率、退款率、履约时效和审计完整度决定能力能否扩大分发。</span>
+          </div>
+        </div>
+      </div>
+      <div class="flow">
+        <div class="node"><b>服务目录化</b><span>把支付、医保、政务、商家、出行、生活缴费等能力变成 Agent 可发现的服务目录。</span></div>
+        <div class="node"><b>动作分级</b><span>区分低风险查询、中风险提交、高风险支付/签约/授权，配置不同确认和风控策略。</span></div>
+        <div class="node"><b>跨域授权</b><span>统一用户、商户、ISV、资源和 Agent 授权，明确范围、有效期和撤销入口。</span></div>
+        <div class="node"><b>服务编排</b><span>让 Agent 能组合多个支付宝服务完成任务，而不是只调用单个支付工具。</span></div>
+        <div class="node"><b>履约协同</b><span>接入商户履约、退款、申诉、问题反馈，让任务成功不止等于支付成功。</span></div>
+        <div class="node"><b>生态指标</b><span>从支付成功率扩展到任务完成率、授权转化、异常恢复时间和用户信任度。</span></div>
+      </div>
+      <div class="note">
+        长期 Action：不是让 <code>SKILL.md</code> 自己完成状态机产品化，而是在 Skill 之上形成 Agent Payment Runtime / Ant Service Agent Runtime。前者先把支付这类高风险交易动作做稳，后者再把支付宝生态里的服务发现、跨域授权、服务编排、商户履约和责任追踪做成平台能力。用 Agent Infrastructure 的语言讲，就是把 7「Action Gateway」做成行业标准，把 8「真实世界副作用」纳入可授权、可确认、可审计、可补偿的治理体系。
+      </div>
+    </section>
+
+    <section id="table" class="section">
+      <h2>附录：payment-skills 与平台线索表</h2>
+      <p>阅读方式：这是证据库，不是主叙事。前半部分是支付宝官方 <code>payment-skills</code> 的 5 个 Skill 和 CLI 线索，后半部分是开放平台、AI 资源中心、沙箱和能力市场的公开/前端包线索。</p>
+      <div class="legend">
+        <span class="pill high">A 官方 GitHub / 公开页面可见</span>
+        <span class="pill infer">B 官方前端包可见</span>
+        <span class="pill mid">C 基于支付底座与接口语义推断</span>
+        <span class="pill low">D 待登录/待后台验证</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>模块 / Skill / 能力</th>
+              <th>官方线索</th>
+              <th>具体功能</th>
+              <th>交易位置</th>
+              <th>网关 / 协议关键点</th>
+              <th>Agent 场景价值</th>
+              <th>风控 / 合规 / 追责</th>
+              <th>PM 面试判断</th>
+              <th>证据等级</th>
+              <th>来源</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>alipay-aipay-product-intro</td>
+              <td>官方 GitHub Skill</td>
+              <td>支付宝智能体钱包和 AI 支付产品介绍 Skill，本身被设计成基于 A2M 智能收协议（HTTP 402）的付费资源。请求 <code>https://aipayapi.alipay.com/merchant/aipay/introduce</code>，如返回 200 则展示内容，如返回 402 则转交 402 支付 Skill。</td>
+              <td>付费内容入口</td>
+              <td>关键协议是 HTTP 402 与 <code>Payment-Needed</code> 响应头；要求提取完整 402 响应报文，不能遗漏或修改状态码、响应头和响应体。</td>
+              <td>展示了“Agent 访问付费资源 → 商户返回付款要求 → Agent 触发支付 Skill”的最小闭环。</td>
+              <td>URL 和响应报文必须原样传递，签名参数不能被改写；用户拒绝付款时必须尊重选择。</td>
+              <td>这是 AI 支付的 demo merchant：它不是介绍页那么简单，而是在演示 A2M/402 付费资源商业模式。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://github.com/alipay/payment-skills/tree/main/alipay-aipay-product-intro">GitHub / SKILL.md</a></td>
+            </tr>
+            <tr>
+              <td>alipay-authenticate-wallet</td>
+              <td>官方 GitHub Skill</td>
+              <td>负责开通并授权支付宝 AI 支付能力，支持检查钱包状态、申请开通、生成授权链接和二维码、接收授权码后绑定钱包，也覆盖解绑/关闭支付能力语义。</td>
+              <td>支付前置授权</td>
+              <td>核心命令是 <code>alipay-bot check-wallet</code>、<code>apply-wallet --agent-name</code>、<code>bind-wallet -c</code>。状态分支：<code>code=200 & access_url空</code> 表示已授权；<code>code=200 & access_url非空</code> 或 <code>code=500</code> 会进入申请/授权流程。</td>
+              <td>让 Agent 在付款前确认“用户钱包是否可用于 AI 支付”，并把授权动作交给支付宝 APP/二维码完成。</td>
+              <td>要求 URL 逐字符原样输出，二维码只按 MEDIA 行处理，禁止读取/分析二维码；授权链接是短时效签名令牌，日志应标记敏感。</td>
+              <td>这是 AI 付最核心的信任入口：PM 要讲清楚“开通意图、授权动作、绑定状态、撤销能力”。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://github.com/alipay/payment-skills/tree/main/alipay-authenticate-wallet">GitHub / SKILL.md</a></td>
+            </tr>
+            <tr>
+              <td>alipay-pay-for-service</td>
+              <td>官方 GitHub Skill</td>
+              <td>处理普通支付宝收银台链接支付：识别 <code>cashier*.alipay.com</code> 或 <code>*excashier*.alipay.com</code> 链接，初始化支付意图，检查钱包状态，提交支付，输出支付链接/二维码，等待用户支付完成后查询状态。</td>
+              <td>普通收银台付款</td>
+              <td>核心命令包括 <code>payment-intent</code>、<code>check-wallet</code>、<code>submit-payment --payment-link</code>、<code>query-payment-status -p shortUrl</code>。查询状态必须用 CLI 返回的 shortUrl，不能把原始 cashier 链接拿去查。</td>
+              <td>Agent 可以接住商户返回的支付宝收银台链接，帮用户完成“确认订单 → 拉起支付 → 查询结果”的流程。</td>
+              <td>输入安全包括收银台域名白名单、参数单引号包裹、shortUrl 禁止用户自行构造、支付链接不写日志、Step 2 后必须 STOP 等待用户下一轮确认。</td>
+              <td>这条链路适合讲传统支付如何被 Agent 化：不是代替用户静默扣款，而是保留用户确认和支付状态轮询。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://github.com/alipay/payment-skills/tree/main/alipay-pay-for-service">GitHub / SKILL.md</a></td>
+            </tr>
+            <tr>
+              <td>alipay-pay-for-402-service</td>
+              <td>官方 GitHub Skill</td>
+              <td>处理 HTTP 402 Payment Required / A402 买方支付流程：保存 <code>Payment-Needed</code> 头到文件，执行付款，等待用户支付完成，查询支付结果并二次请求资源，最后发送履约回执。</td>
+              <td>A2M / 付费资源协议</td>
+              <td>核心命令是 <code>402-buyer-pay -f</code>、<code>402-query-payment-status -t tradeNo -r resource-url</code>、<code>402-buyer-fulfillment-ack -t trade_no</code>。<code>Payment-Needed</code> 是 base64 文本，不解码、不篡改。</td>
+              <td>让 Agent 可以购买 API/内容/服务这类“先请求资源、资源方返回付款要求”的机器间付费资源。</td>
+              <td>文件名只能含字母数字、连字符、下划线、点号；tradeNo 仅允许 32 位纯数字；支付链接/二维码只给当前用户；禁止复用旧支付记录伪造履约。</td>
+              <td>这是岗位里最“吊”的协议点：HTTP 402 把支付从网页按钮变成 Agent 可理解的商业协议。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://github.com/alipay/payment-skills/tree/main/alipay-pay-for-402-service">GitHub / SKILL.md</a></td>
+            </tr>
+            <tr>
+              <td>alipay-payment-feedback</td>
+              <td>官方 GitHub Skill</td>
+              <td>仅在支付宝支付 Skill 使用中出现无法解决的问题时触发，收集当前对话中的问题描述、发生环节和错误信息，执行 <code>alipay-bot problem-feedback --reason</code> 匿名提交给支付宝团队。</td>
+              <td>问题闭环 / 运维反馈</td>
+              <td>覆盖钱包开通/授权、支付流程、支付结果查验、402 支付、履约回执等问题；强调不读取外部文件、不跨对话汇总。</td>
+              <td>让 Agent 支付不是黑盒失败，而是有问题上报和平台排查入口。</td>
+              <td>只收集用户主动提供的问题描述，不收集凭证等敏感信息；数据仅发送至支付宝官方服务器。</td>
+              <td>这个 Skill 体现产品成熟度：支付系统必须有异常归因和反馈通路。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://github.com/alipay/payment-skills/tree/main/alipay-payment-feedback">GitHub / SKILL.md</a></td>
+            </tr>
+            <tr>
+              <td>@alipay/agent-payment CLI</td>
+              <td>官方 GitHub Skill 元数据</td>
+              <td>5 个 Skill 共同依赖 <code>alipay-bot</code> CLI；安装包固定为 <code>@alipay/agent-payment@1.0.0</code>，要求 npm <code>dist.integrity</code> 精确匹配指定 SHA-512。</td>
+              <td>本地执行层</td>
+              <td>Skill 明确要求安装前校验包来源和完整性，禁止使用 <code>@latest</code> 或非锁定版本；CLI 用于钱包检查、授权申请、提交支付、查询状态、402 支付、履约回执、问题反馈。</td>
+              <td>把 Agent 的自然语言决策落到可审计、可复现的本地命令执行。</td>
+              <td>安装外部 npm 包前必须用户确认；只允许传递白名单环境变量，避免泄露 API Key、令牌、数据库凭证等。</td>
+              <td>AI 支付产品设计不仅要讲支付风控，也要讲 Agent 工具供应链安全。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://github.com/alipay/payment-skills">GitHub README / SKILL metadata</a></td>
+            </tr>
+            <tr>
+              <td>AI 支付开发者激励计划</td>
+              <td>开放平台首页 banner</td>
+              <td>官方面向 AI 支付开发者的增长与激励入口，首页展示 Token 算力补贴最高 5660 元。</td>
+              <td>开发者供给侧</td>
+              <td>说明支付宝在拉 AI 支付能力供给，可能需要开发者用 Skill/MCP/OpenAPI 方式接入。</td>
+              <td>降低开发者从 Demo 到真实交易能力的成本。</td>
+              <td>激励计划不是能力本身，需要看报名门槛、审核、合规要求。</td>
+              <td>可作为“官方战略信号”：AI 付不是边缘实验，而是开放平台重点方向。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://open.alipay.com/">open.alipay.com 首页</a></td>
+            </tr>
+            <tr>
+              <td>AI 智能体商业信任协议</td>
+              <td>首页 banner：一句话让 AI 帮忙买奶茶</td>
+              <td>围绕 Agent 商业交易可信化：用户意图、商家履约、支付行为、责任边界。</td>
+              <td>交易协议层</td>
+              <td>PM 要关注 Agent 代表用户交易时的授权、预算、确认、撤销、凭证、纠纷链路。</td>
+              <td>把“AI 帮我买”从对话体验推进到可支付、可履约、可追责。</td>
+              <td>高风险点：误买、超预算、商户误导、优惠/退款、未成年人、争议举证。</td>
+              <td>面试可讲成“AI 商业化里的 trust protocol”，不是只做支付 API 包装。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://open.alipay.com/portal/forum/post/234201012">商业信任协议文章入口</a></td>
+            </tr>
+            <tr>
+              <td>AI 资源中心</td>
+              <td><code>open-ai-apps</code> 应用</td>
+              <td>承载模型广场、能力市场、Skill/MCP 管理、Agent、知识库、沙箱、运营数据等页面。</td>
+              <td>AI 能力控制台</td>
+              <td>统一资源域，路由包括 <code>/ai-resource-center/skill-detail</code>、<code>/mcp-detail</code>、<code>/agent/:agentId/arrange</code>、<code>/sandbox/debug/page</code>。</td>
+              <td>开发者在一个工作台里选择能力、测试能力、组合能力并发布到 Agent。</td>
+              <td>需要登录态、空间 <code>spaceId</code>、权限跳转和 NO_PERMISSION 处理。</td>
+              <td>这是 AI 付的“操作系统”，面试要从资源管理而非单 API 讲起。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/">open-ai-apps 前端入口</a></td>
+            </tr>
+            <tr>
+              <td>Skill 创建器</td>
+              <td><code>/create-skill</code></td>
+              <td>支持 API 接口、MCP、文件、zip 包四种方式创建 Skill；可填写 Skill 名称、触发指令、核心功能、输出风格、附加要求。</td>
+              <td>工具定义层</td>
+              <td>Skill 将自然语言任务包装成可被 Agent 发现和触发的能力；输入可来自 OpenAPI、MCP、文档和 Skill-Zip。</td>
+              <td>降低开发者把外部服务封装成 Agent 技能的门槛。</td>
+              <td>创建器有内容安全错误码 <code>AE15112099000062</code>，提示会检测违规或不安全内容。</td>
+              <td>Skill 的产品核心是“意图模板 + 能力依赖 + 可审核包”，不是普通 prompt。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001292046/0a2745bf-async.098d38b0.js">create-skill chunk</a></td>
+            </tr>
+            <tr>
+              <td>Skill-Zip / .md 输入</td>
+              <td>创建器上传配置</td>
+              <td>支持上传 <code>.zip</code>、<code>.pdf</code>、<code>.md</code>、<code>.doc</code>、<code>.docx</code>、<code>.txt</code>，zip 最多 5 个，文本文件最多 5 个，单文件配置显示 50MB。</td>
+              <td>Skill 包交付层</td>
+              <td>AI 资源中心创建器支持 md 与 zip 说明 Skill 可以通过文档/包结构生成或重打包；支付场景下，支付宝官方 GitHub 已公开 5 个具体 <code>SKILL.md</code> 作为可读样例。</td>
+              <td>开发者可把已有说明文档或 zip 包快速转为 Skill。</td>
+              <td>zip 包重打包与新增功能点需要审核、版本控制、源代码/内容安全扫描。</td>
+              <td>面试里可区分两层：GitHub payment-skills 是公开支付技能样例；开放平台创建器是通用 Skill 生产工具，包规范细节仍需登录后台验证。</td>
+              <td><span class="pill infer">B</span> <span class="pill low">D</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001292046/0a2745bf-async.098d38b0.js">create-skill chunk</a></td>
+            </tr>
+            <tr>
+              <td>MCP 创建器</td>
+              <td><code>/create-mcp</code></td>
+              <td>“一句话唤醒 MCP Server”，支持自然语言描述 MCP 的功能、输入字段、输出字段、示例；也支持通过 API 定义创建。</td>
+              <td>工具协议层</td>
+              <td>MCP 用于把可调用工具注册给 Agent；创建器可接入 API、JSON、cURL，并生成 server 能力。</td>
+              <td>让 Agent 不只会回答，还能安全调用外部工具和支付相关能力。</td>
+              <td>API Key/Token 会“加密存储，仅用于支付宝网关代理调用”。这是网关托管与密钥保护重点。</td>
+              <td>MCP 是 AI 支付的“工具总线”，面试要解释它如何把接口变成 Agent 可调用动作。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001292046/0223de62-async.fb0f1065.js">create-mcp chunk</a></td>
+            </tr>
+            <tr>
+              <td>MCP API 导入</td>
+              <td>表单 / Swagger JSON / cURL</td>
+              <td>可手动填写接口名、请求方法、URL、认证方式、接口描述；可粘贴 Swagger/OpenAPI JSON；可粘贴 cURL 自动解析 Method、URL、Headers、Body。</td>
+              <td>接口转工具</td>
+              <td>认证方式包含 API Key 与 Token；密钥进入支付宝网关代理调用，降低 Agent 直接暴露凭证风险。</td>
+              <td>把已有商家/服务商 API 快速变成 Agent 工具。</td>
+              <td>需要处理接口最小权限、参数白名单、敏感字段脱敏、调用日志。</td>
+              <td>这是“开发者工具产品”的亮点：从接口文档到可调用 MCP，缩短冷启动。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001292046/0223de62-async.fb0f1065.js">create-mcp chunk</a></td>
+            </tr>
+            <tr>
+              <td>MCP 托管与代码扫描</td>
+              <td><code>mcpHostedOperate</code></td>
+              <td>包含下载代码模板、获取文件树/文件内容、拉取 GitHub 并扫描代码、上传并扫描代码、保存运行参数、动态 Headers、下载构建日志、刷新工具列表等。</td>
+              <td>工具运行时</td>
+              <td>接口包括 <code>/aiopen/mcpHostedOperate/downloadCodeTemplate.json</code>、<code>pullGithubAndScanCode.json</code>、<code>saveRuntimeParams.json</code>、<code>saveDynamicHeaders.json</code>。</td>
+              <td>让开发者把 MCP Server 从“描述”推进到可托管、可构建、可上线。</td>
+              <td>代码扫描、构建日志、运行参数和动态 Header 都是安全边界。</td>
+              <td>AI 支付要防止工具任意执行；托管层是风控和可观测性的关键。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/5c012289-async.e012e7c6.js">mcp-detail chunk</a></td>
+            </tr>
+            <tr>
+              <td>Skill 管理</td>
+              <td><code>/ai-resource-center/skill-manage</code></td>
+              <td>管理自己创建或订阅的 Skill，详情页、版本、资源类型和添加到 Agent 相关入口。</td>
+              <td>能力生命周期</td>
+              <td>与 <code>skill-detail</code>、<code>market/detail</code>、<code>agent arrange</code> 共同组成订阅、添加、使用链路。</td>
+              <td>Agent 可以复用官方/商家/ISV 的 Skill。</td>
+              <td>需要处理能力上下线、版本兼容、权限变更。</td>
+              <td>Skill 管理是 AI 能力 SKU 化的基础。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/">open-ai-apps 路由图</a></td>
+            </tr>
+            <tr>
+              <td>MCP 管理</td>
+              <td><code>/ai-resource-center/mcp-manage</code></td>
+              <td>管理 MCP Server、工具列表、版本、审核、上线、调试、托管配置。</td>
+              <td>工具生命周期</td>
+              <td>接口包括 <code>saveMcpServerInfo</code>、<code>batchEditMcpTool</code>、<code>debugTool</code>、<code>submitAudit</code>、<code>submitOnline</code>。</td>
+              <td>让支付/交易/商户接口进入 Agent 可调用工具池。</td>
+              <td>必须做工具粒度权限、审核状态、版本灰度、日志追踪。</td>
+              <td>MCP 管理页是从 Demo 到生产的分水岭。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/5c012289-async.e012e7c6.js">mcp-detail chunk</a></td>
+            </tr>
+            <tr>
+              <td>添加 OpenAPI 工具</td>
+              <td><code>/addOpenApiTool</code></td>
+              <td>从支付宝开放平台 API 中查询和添加 OpenAPI，作为 MCP/Skill/Agent 工具资源。</td>
+              <td>支付底座接入</td>
+              <td>接口线索包括 <code>/api/openapi/queryApiByPage.json</code>，以及 AI 资源中心路由 <code>/ai-resource-center/addOpenApiTool</code>。</td>
+              <td>把支付、会员、营销、商户服务等开放 API 变成 Agent 工具。</td>
+              <td>OpenAPI 接入要检查产品准入、应用类型、签名、证书、权限包。</td>
+              <td>这是“AI 付”和传统开放平台之间的桥。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/9ebb023a-async.8ff34eba.js">addOpenApiTool chunk</a></td>
+            </tr>
+            <tr>
+              <td>Agent 编排</td>
+              <td><code>/agent/:agentId/arrange</code></td>
+              <td>在 Agent 中添加资源、Skill、子 Agent、知识库，并同步到编排 iframe。</td>
+              <td>执行编排层</td>
+              <td>接口包括 <code>/aiopen/agent/resource/addToAgent.json</code>、<code>resource/skill/used/list.json</code>、<code>resource/agent/used/list.json</code>。</td>
+              <td>Agent 可以组合支付能力、商品能力、商家能力、知识库能力完成交易任务。</td>
+              <td>需要限制工具链调用顺序、预算、确认点和人工兜底。</td>
+              <td>AI 支付 PM 要能画出“Agent 编排里的支付节点”和失败回退。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/4dd27dd1-async.77a0e099.js">agent arrange chunk</a></td>
+            </tr>
+            <tr>
+              <td>Agent 创建与授权</td>
+              <td><code>/aiopen/agent/*</code></td>
+              <td>自动创建、创建、生成 Logo、详情、列表、编辑 token、同步元数据、更新。</td>
+              <td>Agent 管理层</td>
+              <td>接口包括 <code>/aiopen/agent/autoCreate.json</code>、<code>create.json</code>、<code>agentAuths.json</code>、<code>syncMetadata.json</code>。</td>
+              <td>为商家/开发者生成可发布、可授权、可配置的智能体。</td>
+              <td>Agent token 与元数据同步需要审计；ISV Agent 授权要清楚代理关系。</td>
+              <td>商业化不是单个 Skill，而是 Agent 资产化、可运营化。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/4dd27dd1-async.77a0e099.js">agent arrange chunk</a></td>
+            </tr>
+            <tr>
+              <td>授权详情</td>
+              <td><code>/authorization-detail/:id</code></td>
+              <td>查看授权 Agent、授权申请记录详情、授权 URL、授权记录、授权场景列表。</td>
+              <td>权限协议层</td>
+              <td>接口包括 <code>/aiopen/isv/resource/authAgents.json</code>、<code>authApplyRecordDetail.json</code>、<code>authUrl.json</code>、<code>authRecords.json</code>。</td>
+              <td>让 ISV/商户资源被 Agent 使用前有明确授权链路。</td>
+              <td>需要记录授权主体、范围、开始/结束时间、撤销、再授权。</td>
+              <td>这是 AI 付“谁允许 Agent 花钱/调接口”的核心页面。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/48898781-async.29837eb0.js">authorization chunk</a></td>
+            </tr>
+            <tr>
+              <td>沙箱调试</td>
+              <td><code>/sandbox/debug/page</code></td>
+              <td>支持小程序应用、网页/移动应用、AI 服务应用三类应用的接口开发和主要功能联调。</td>
+              <td>测试验证层</td>
+              <td>使用 <code>/octopus/service.do</code>，服务名包括 <code>alipay.sandboxsys.ai.sandbox</code>、<code>alipay.sandboxsys.ai.app.list</code>、<code>alipay.developertool.commontool.querySandboxGatewayResponse</code>。</td>
+              <td>Agent 调支付前，先在模拟环境跑通应用、密钥、产品能力和网关响应。</td>
+              <td>沙箱完成后仍需正式环境验收；调试日志可用于问题定位和责任回放。</td>
+              <td>网关协议面试要讲“调试记录”和“网关响应回看”，这是生产可控性的证据。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>沙箱支付产品清单</td>
+              <td><code>ProdAppMaps</code></td>
+              <td>前端包列出手机网站支付、APP 支付、电脑网站支付、当面付、商家转账、获取会员信息、JSAPI 支付、商家扣款、商家分账、预授权支付等。</td>
+              <td>支付产品层</td>
+              <td>不同产品支持不同应用类型：小程序、网页/移动、AI 服务应用；AI 服务应用在包里显示支持订单码支付。</td>
+              <td>Agent 可根据场景选择不同支付产品，而不是固定一种支付方式。</td>
+              <td>每个支付产品有独立准入、风控和资金链路。</td>
+              <td>面试可按“支付场景-应用类型-产品能力”三维拆解。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>AI 订阅付费</td>
+              <td>沙箱支持产品名</td>
+              <td>面向 Web/PUBLICAPP 的 AI 订阅付费能力。</td>
+              <td>持续付费 / 订阅</td>
+              <td>需要订阅协议、周期扣费、续订、取消、账单与失败重试。</td>
+              <td>适合 AI SaaS、Agent 服务、用量包、会员权益等商业化。</td>
+              <td>要清楚用户同意、扣费提醒、取消入口和争议处理。</td>
+              <td>AI SaaS 商业化绕不开订阅付费，这是岗位要求里的计费/订阅交集。</td>
+              <td><span class="pill infer">B</span> <span class="pill mid">C</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>智能体个人收款</td>
+              <td>沙箱支持产品名</td>
+              <td>小程序、网页/移动应用支持“智能体个人收款”。</td>
+              <td>Agent 收款场景</td>
+              <td>可能用于轻量服务、个人创作者、AI 代理服务收费，需要确认收款主体和交易凭证。</td>
+              <td>让 Agent 可以围绕服务结果收款，而不是只跳转商家支付。</td>
+              <td>重点是实名、限额、交易真实性、服务履约和退款规则。</td>
+              <td>这是 AI 付里最值得追问的新增支付形态之一。</td>
+              <td><span class="pill infer">B</span> <span class="pill low">D</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>订单码支付</td>
+              <td>沙箱支持产品名</td>
+              <td>Web/PUBLICAPP 与 AI 服务应用支持订单码支付。</td>
+              <td>扫码/码付交易</td>
+              <td>Agent 可以生成或展示订单码，由用户确认付款；减少直接代扣风险。</td>
+              <td>适合“AI 生成订单，人扫码确认”的半自动交易。</td>
+              <td>要防止二维码替换、过期、重复支付、金额篡改。</td>
+              <td>对于高风险 Agent 支付，订单码是安全确认手段。</td>
+              <td><span class="pill infer">B</span> <span class="pill mid">C</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>商家扣款</td>
+              <td>沙箱支持产品名</td>
+              <td>小程序、网页/移动应用支持商家扣款。</td>
+              <td>授权扣费</td>
+              <td>必须先有用户授权或协议签约，再由商家按规则扣款。</td>
+              <td>适合 Agent 自动续费、后付费、用量计费等。</td>
+              <td>超预算、未经确认扣款、扣费失败重试、撤销授权是重点。</td>
+              <td>AI 付的危险区在这里：自动化越强，授权和预算越要产品化。</td>
+              <td><span class="pill infer">B</span> <span class="pill mid">C</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>商家分账</td>
+              <td>沙箱支持产品名</td>
+              <td>网页/移动应用支持商家分账。</td>
+              <td>交易后资金分配</td>
+              <td>涉及服务商、平台、商户、Agent 能力提供方之间的收益拆分。</td>
+              <td>支持 AI 能力市场、代运营、服务商生态的商业闭环。</td>
+              <td>需要分账规则、分账方资质、账务一致性、退款后冲正。</td>
+              <td>如果岗位讲“商业化”，分账比支付按钮更 PM。</td>
+              <td><span class="pill infer">B</span> <span class="pill mid">C</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>预授权支付</td>
+              <td>沙箱支持产品名</td>
+              <td>小程序、网页/移动应用支持预授权支付。</td>
+              <td>冻结 / 后确认</td>
+              <td>先冻结额度，后按履约结果确认或解冻，适合不确定金额或服务结果。</td>
+              <td>Agent 可在用户确认预算后锁定支付能力，等任务完成再结算。</td>
+              <td>要处理超时解冻、部分扣款、履约争议和冻结额度展示。</td>
+              <td>这是“Agent 代办”比普通电商更需要的支付形态。</td>
+              <td><span class="pill infer">B</span> <span class="pill mid">C</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>能力市场</td>
+              <td><code>/ability-market</code> / <code>/market</code></td>
+              <td>查询能力分类、交付表单、交付申请、销售/购买订单、资源列表、资源计数、卖家能力详情。</td>
+              <td>能力商业化</td>
+              <td>UGW 服务包括 <code>com.alipay.open.ability.market.delivery.apply</code>、<code>purchase.order.apply</code>、<code>purchase.resource.list</code>。</td>
+              <td>把 Skill/MCP/A2A/知识库作为可订阅资源流通。</td>
+              <td>需要能力协议、服务范围、付费试用、订单状态、交付审核。</td>
+              <td>这是 AI 能力从工具到商品的关键：有订单才有商业化。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/0e48074f-async.6bfe6e7a.js">ability-market chunk</a></td>
+            </tr>
+            <tr>
+              <td>资源市场钱包</td>
+              <td><code>mrchiscore.resource.market.wallet</code></td>
+              <td>钱包开通、押金充值、充值状态、提现、账单查询、账户信息和账户申请。</td>
+              <td>结算 / 资金账户</td>
+              <td>服务包括 <code>wallet.apply</code>、<code>wallet.deposit</code>、<code>wallet.withdraw</code>、<code>wallet.bill.query</code>、<code>usageagreement.apply</code>。</td>
+              <td>支持能力市场的付费购买、押金、卖家结算。</td>
+              <td>资金账户和使用协议是强监管区域，必须审慎设计。</td>
+              <td>AI 支付 PM 要能把“能力订阅费”和“真实资金账户”连接起来。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/0e48074f-async.6bfe6e7a.js">ability-market chunk</a></td>
+            </tr>
+            <tr>
+              <td>安全内容检测</td>
+              <td><code>AE15112099000062</code></td>
+              <td>前端工具会处理内容违规或不安全信息，提示用户核对修改后再提交。</td>
+              <td>发布审核前置</td>
+              <td>在 Skill/MCP/市场资源提交阶段做内容安全校验，返回失败字段。</td>
+              <td>防止 Agent 技能描述、API 配置、市场上架内容带来违规风险。</td>
+              <td>要覆盖诱导交易、违法服务、隐私泄漏、绕过支付监管等。</td>
+              <td>AI 支付不仅是金融风控，也有生成内容安全和工具安全。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">shared utility chunk</a></td>
+            </tr>
+            <tr>
+              <td>开放平台网页/移动接入</td>
+              <td>首页开发接入</td>
+              <td>将网站/移动 App 接入支付、会员等支付宝能力。</td>
+              <td>传统开放能力底座</td>
+              <td>AI 资源中心最终仍会落到开放平台应用、产品准入、API 权限、签名证书和网关调用。</td>
+              <td>AI Agent 可调用的是已有支付/会员能力，但需要被协议化和工具化。</td>
+              <td>支付能力不能绕过原有应用审核、证书、接口权限。</td>
+              <td>面试可强调“AI 付是增量编排层，不替代支付底座”。</td>
+              <td><span class="pill high">A</span></td>
+              <td><a href="https://open.alipay.com/">open.alipay.com 首页</a></td>
+            </tr>
+            <tr>
+              <td>API 文档与 AIT 工具</td>
+              <td><code>alipay.ait.*</code></td>
+              <td>文档前端包中出现 AIT 应用查询、授权应用查询、展示状态、规则组查询、规则检查、产品展示等服务名。</td>
+              <td>接入辅助 / 检测</td>
+              <td>服务名如 <code>alipay.ait.app.query</code>、<code>alipay.ait.auth.app.query</code>、<code>alipay.developertool.ait.rule.check</code>。</td>
+              <td>帮助开发者检查应用和产品是否满足接入规则。</td>
+              <td>这些更像开放平台内部接入工具服务，不能当作外部可直接调用 API。</td>
+              <td>可作为“支付宝已在开发者工具侧接入 AI Tooling”的证据。</td>
+              <td><span class="pill infer">B</span> <span class="pill low">D</span></td>
+              <td><a href="https://opendocs.alipay.com/">支付宝文档中心</a></td>
+            </tr>
+            <tr>
+              <td>网关响应回看</td>
+              <td><code>querySandboxGatewayResponse</code></td>
+              <td>沙箱里可查询 API 调试日志和沙箱网关响应。</td>
+              <td>观测 / 追责</td>
+              <td><code>alipay.developertool.commontool.ai.queryApiLogs</code> 与 <code>alipay.developertool.commontool.querySandboxGatewayResponse</code>。</td>
+              <td>Agent 调工具失败时可定位参数、签名、权限、产品准入、网关错误。</td>
+              <td>日志中要做敏感信息脱敏，并保留可审计证据链。</td>
+              <td>PM 讲网关不要空泛，要落到“日志、响应、重放、定位”。</td>
+              <td><span class="pill infer">B</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/86cbe0dd-async.64b6636a.js">sandbox debug chunk</a></td>
+            </tr>
+            <tr>
+              <td>默认市场协议</td>
+              <td><code>DEFAULT_MARKET_PROTOCOL</code></td>
+              <td>前端包中出现能力市场协议常量和使用协议申请服务。</td>
+              <td>市场交易协议</td>
+              <td>能力市场需要先签署使用协议，再进行资源购买、交付或结算。</td>
+              <td>规范买卖双方、平台、Agent 使用方之间的责任。</td>
+              <td>协议应覆盖服务可用性、退款、违规下架、数据使用、调用限制。</td>
+              <td>AI 能力市场的难点不是 UI，是协议和责任。</td>
+              <td><span class="pill infer">B</span> <span class="pill low">D</span></td>
+              <td><a href="https://gw.alipayobjects.com/render/p/yuyan/180020010001290846/0e48074f-async.6bfe6e7a.js">ability-market chunk</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
