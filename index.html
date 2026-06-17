@@ -53,7 +53,7 @@
       margin-top: 0;
       min-height: 0;
       align-items: start;
-      padding: 92px 0 64px;
+      padding: 124px 0 72px;
       border-bottom: 0;
     }
 
@@ -146,6 +146,43 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .toc a {
+      display: block;
+      min-height: 84px;
+      padding: 14px;
+      border: 1px solid rgba(22, 119, 255, 0.18);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.54);
+      text-decoration: none;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .toc a:hover {
+      border-color: rgba(22, 119, 255, 0.42);
+      background: rgba(22, 119, 255, 0.06);
+    }
+
+    .toc b {
+      display: block;
+      color: var(--text);
+      font-size: 14px;
+      letter-spacing: -0.2px;
+      margin-bottom: 6px;
+    }
+
+    .toc span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
     }
 
     .section {
@@ -933,6 +970,7 @@
     @media (max-width: 980px) {
       .hero { grid-template-columns: 1fr; }
       .hero-side { grid-template-columns: 1fr; }
+      .toc { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .issue-groups { grid-template-columns: 1fr; }
       .cards.three { grid-template-columns: 1fr; }
@@ -950,8 +988,9 @@
 
     @media (max-width: 620px) {
       .shell { padding: 18px 12px 36px; }
-      .hero { padding: 58px 0 42px; }
+      .hero { padding: 74px 0 46px; }
       .hero-main { padding: 0; }
+      .toc { grid-template-columns: 1fr; }
       .cards { grid-template-columns: 1fr; }
       .cards.three { grid-template-columns: 1fr; }
       .case-strip { grid-template-columns: 1fr; }
@@ -987,6 +1026,24 @@
           <span>如果 A402、Skill/MCP、沙箱和能力市场先连成体系，支付宝就不只是能力提供者，而是在定义 Agent 商业交易的基础规则。</span>
         </div>
       </aside>
+      <nav class="toc" aria-label="页面目录">
+        <a href="#trial">
+          <b>01 单点 Skill 试跑</b>
+          <span>从 Dry Run 到 A402 支付闭环，看最小真实链路。</span>
+        </a>
+        <a href="#issues">
+          <b>02 试跑暴露的问题</b>
+          <span>运行接入、交易控制、商业闭环三类产品问题。</span>
+        </a>
+        <a href="#actions">
+          <b>03 产品设计展望</b>
+          <span>从支付节点到动作网关，再到支付宝服务生态。</span>
+        </a>
+        <a href="#table">
+          <b>04 证据与线索表</b>
+          <span>payment-skills、开放平台和能力市场线索汇总。</span>
+        </a>
+      </nav>
     </section>
 
     <section id="trial" class="section">
