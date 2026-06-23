@@ -967,6 +967,77 @@
       margin-top: 14px;
     }
 
+    /* ── Game-hero TOC links inside bottom bar ─── */
+    .game-bot-link {
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background 0.15s;
+      padding: 2px 4px;
+      margin: -2px -4px;
+    }
+
+    .game-bot-link:hover {
+      background: rgba(22, 119, 255, 0.07);
+    }
+
+    .game-bot-link .game-bot-key {
+      color: var(--cyan);
+    }
+
+    .game-bot-link:hover .game-bot-val {
+      color: var(--cyan);
+    }
+
+    /* ── Game-hero TOC bar ─────────────────────── */
+    .game-toc-bar {
+      position: absolute;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    .game-toc-bar a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 8px 16px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(22, 119, 255, 0.18);
+      border-radius: var(--radius);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      text-decoration: none;
+      transition: border-color 0.18s, background 0.18s;
+      box-shadow: 0 1px 6px rgba(22,119,255,0.06);
+    }
+
+    .game-toc-bar a:hover {
+      border-color: rgba(22, 119, 255, 0.42);
+      background: rgba(22, 119, 255, 0.07);
+    }
+
+    .game-toc-num {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      font-weight: 900;
+      color: var(--cyan);
+      letter-spacing: 1.5px;
+    }
+
+    .game-toc-label {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 10.5px;
+      color: var(--text);
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
     @media (max-width: 980px) {
       .hero { grid-template-columns: 1fr; }
       .hero-side { grid-template-columns: 1fr; }
@@ -999,51 +1070,898 @@
       .timeline-dot { width: 44px; height: 44px; }
       h1 { font-size: 30px; }
     }
+
+    /* ============================================================
+       GAME HERO
+    ============================================================ */
+    .game-hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 580px;
+      overflow: hidden;
+      background: #DDD9D2;
+    }
+
+    /* mask-image fades video edges to transparent — works for any video bg */
+    .game-hero-video {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 112%;
+      width: 112%;
+      object-fit: cover;
+      object-position: center 25%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Overlay: top fade for header, bottom transition to page bg */
+    .game-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(196,191,182,0.75) 0%,
+        rgba(196,191,182,0.00) 12%,
+        rgba(245,244,240,0.00) 75%,
+        rgba(245,244,240,1.00) 100%
+      );
+    }
+
+    .game-hud {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Header */
+    .game-hud-header {
+      position: absolute;
+      top: 22px;
+      left: 26px;
+      right: 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: auto;
+    }
+
+    .game-char-id {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .game-char-name {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .game-char-sub {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 10px;
+      color: var(--cyan);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .game-hud-corner {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 5px;
+    }
+
+    .game-hud-label {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      color: var(--weak);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .game-hud-status {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 11px;
+      color: var(--green);
+      letter-spacing: 1.5px;
+      animation: game-blink 2.8s ease-in-out infinite;
+    }
+
+    @keyframes game-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.55; }
+    }
+
+    /* Shared panel styles */
+    .game-panel {
+      position: absolute;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(22, 119, 255, 0.18);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      pointer-events: auto;
+      box-shadow: 0 2px 16px rgba(22,119,255,0.07), 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .game-panel-title {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      font-weight: 900;
+      color: var(--weak);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 13px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Left panel */
+    .game-panel-left {
+      top: 76px;
+      left: 26px;
+      width: 364px;
+      max-height: calc(100vh - 172px);
+      overflow-y: auto;
+    }
+
+    .game-panel-left::-webkit-scrollbar { width: 2px; }
+    .game-panel-left::-webkit-scrollbar-thumb { background: var(--line); }
+
+    .game-panel-tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 14px;
+    }
+
+    .game-tab {
+      flex: 1;
+      padding: 5px 6px;
+      background: transparent;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--weak);
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: default;
+    }
+
+    .game-tab.active {
+      background: rgba(22, 119, 255, 0.08);
+      border-color: rgba(22, 119, 255, 0.38);
+      color: var(--cyan);
+    }
+
+    /* Skill tree container */
+    .skill-tree-list {
+      position: relative;
+    }
+
+    @keyframes nodeGlow {
+      0%, 100% { box-shadow: 0 0 5px rgba(22,119,255,0.5); }
+      50% { box-shadow: 0 0 11px rgba(22,119,255,0.9); }
+    }
+
+    .game-skill-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      gap: 10px;
+      align-items: start;
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .game-skill-item:hover {
+      border-color: rgba(22,119,255,0.35);
+      background: rgba(22,119,255,0.05);
+    }
+
+    .game-skill-item.gs-active {
+      border-color: rgba(22, 119, 255, 0.3);
+      background: rgba(22, 119, 255, 0.04);
+    }
+
+    .game-skill-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(22, 119, 255, 0.07);
+      border: 1px solid rgba(22, 119, 255, 0.18);
+      border-radius: 5px;
+      display: grid;
+      place-items: center;
+      font-size: 15px;
+    }
+
+    .game-skill-item.gs-active .game-skill-icon {
+      background: rgba(22, 119, 255, 0.13);
+      border-color: rgba(22, 119, 255, 0.4);
+    }
+
+    .game-skill-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .game-skill-sub {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9.5px;
+      color: var(--weak);
+      letter-spacing: 0.3px;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .game-skill-pts {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      text-align: right;
+    }
+
+    .game-skill-pts span {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9.5px;
+      color: var(--cyan);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    /* Right panel */
+    .game-panel-right {
+      top: 76px;
+      right: 26px;
+      width: 308px;
+    }
+
+    .game-attr-row {
+      display: grid;
+      grid-template-columns: 82px 1fr 38px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 11px;
+    }
+
+    .game-attr-label {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9.5px;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .game-attr-track {
+      height: 5px;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .game-attr-fill {
+      height: 100%;
+      background: linear-gradient(90deg, rgba(22,119,255,0.55), #1677FF);
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .game-attr-fill::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(255,255,255,0.6);
+    }
+
+    .game-attr-num {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 10.5px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .game-attr-divider {
+      height: 1px;
+      background: var(--line);
+      margin: 14px 0;
+    }
+
+    .game-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .game-total-label {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      color: var(--weak);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .game-total-val {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: 1px;
+    }
+
+    .game-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .game-btn {
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .game-btn-pass {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--weak);
+    }
+
+    .game-btn-commit {
+      flex: 1;
+      background: rgba(22, 119, 255, 0.09);
+      border: 1px solid rgba(22, 119, 255, 0.42);
+      color: var(--cyan);
+      text-align: center;
+    }
+
+    .game-btn-commit:hover {
+      background: rgba(22, 119, 255, 0.15);
+      border-color: var(--cyan);
+      color: #0050cc;
+    }
+
+    /* Bottom bar */
+    .game-hud-bottom {
+      position: absolute;
+      bottom: 22px;
+      left: 26px;
+      right: 26px;
+      display: flex;
+      align-items: center;
+      padding: 11px 18px;
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid rgba(22, 119, 255, 0.16);
+      border-radius: var(--radius);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 2px 12px rgba(22,119,255,0.06), 0 1px 3px rgba(0,0,0,0.05);
+      pointer-events: auto;
+    }
+
+    .game-bot-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+    }
+
+    .game-bot-item + .game-bot-item {
+      border-left: 1px solid var(--line);
+      padding-left: 20px;
+      margin-left: 20px;
+    }
+
+    .game-bot-key {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 8.5px;
+      color: var(--weak);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .game-bot-val {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .game-bot-val-active {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 10.5px;
+      color: var(--green);
+      letter-spacing: 1px;
+    }
+
+    /* Scroll cue */
+    .game-scroll-cue {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      pointer-events: none;
+      z-index: 3;
+      animation: game-float 2s ease-in-out infinite;
+    }
+
+    @keyframes game-float {
+      0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.55; }
+      50% { transform: translateX(-50%) translateY(6px); opacity: 0.9; }
+    }
+
+    .game-scroll-cue span {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 8.5px;
+      color: var(--weak);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .game-scroll-arrow {
+      width: 16px;
+      height: 9px;
+      border-right: 1.5px solid var(--weak);
+      border-bottom: 1.5px solid var(--weak);
+      transform: rotate(45deg);
+      margin-top: -4px;
+    }
+
+    /* ── Skill detail popup ─────────────────── */
+    .game-skill-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: none;
+    }
+    .game-skill-backdrop.open { display: block; }
+
+    /* SVG connector line from skill item to popup */
+    #skillConnectSvg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      display: none;
+      overflow: visible;
+    }
+    @keyframes fadeInLine {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    #skillConnectSvg.open {
+      display: block;
+      animation: fadeInLine 0.3s ease forwards;
+    }
+
+    .game-skill-detail {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 6;
+      width: 440px;
+      max-width: 90vw;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(22,119,255,0.22);
+      border-radius: var(--radius);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+      padding: 22px;
+      display: none;
+      pointer-events: auto;
+    }
+    .game-skill-detail.open { display: block; }
+
+    .gsd-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .gsd-icon {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      background: rgba(22,119,255,0.08);
+      border: 1px solid rgba(22,119,255,0.22);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+    }
+    .gsd-titles { flex: 1; min-width: 0; }
+    .gsd-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.2px;
+      margin-bottom: 4px;
+    }
+    .gsd-name-en {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      color: var(--weak);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .gsd-close {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .gsd-close:hover { background: var(--bg); color: var(--text); }
+
+    .gsd-pts {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .gsd-pt-badge {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 10px;
+      color: var(--cyan);
+      background: rgba(22,119,255,0.07);
+      border: 1px solid rgba(22,119,255,0.24);
+      border-radius: 4px;
+      padding: 3px 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .gsd-lore {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.78;
+      margin-bottom: 18px;
+      padding: 11px 14px;
+      background: rgba(22,119,255,0.03);
+      border-left: 2px solid rgba(22,119,255,0.28);
+      border-radius: 0 5px 5px 0;
+    }
+
+    .gsd-attr-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 46px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .gsd-attr-label {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .gsd-attr-track {
+      height: 5px;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .gsd-attr-fill {
+      height: 100%;
+      background: linear-gradient(90deg, rgba(22,119,255,0.55), #1677FF);
+      border-radius: 2px;
+    }
+    .gsd-attr-num {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .gsd-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      margin-top: 14px;
+    }
+    .gsd-tag {
+      font-size: 11px;
+      color: var(--muted);
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 9px;
+    }
+
+    @media (max-width: 860px) {
+      .game-panel-left { width: 312px; }
+      .game-panel-right { width: 268px; }
+    }
+
+    @media (max-width: 680px) {
+      .game-panel-left { display: none; }
+      .game-panel-right {
+        left: 16px;
+        right: 16px;
+        width: auto;
+        top: auto;
+        bottom: 80px;
+      }
+      .game-hud-bottom { display: none; }
+      .game-scroll-cue { bottom: 26px; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- ============================================================
+       GAME HERO — Character Profile
+  ============================================================ -->
+  <section class="game-hero">
+    <video class="game-hero-video" autoplay muted loop playsinline>
+      <source src="assets/%E6%A8%AA%E5%B1%8F%E8%A7%86%E9%A2%91.mp4" type="video/mp4">
+    </video>
+    <div class="game-hero-overlay"></div>
+
+    <div class="game-hud">
+
+      <!-- Top header -->
+      <div class="game-hud-header">
+        <div class="game-char-id">
+          <span class="game-char-name">ZIMI.PM</span>
+          <span class="game-char-sub">AI Product Manager · Agent Commerce</span>
+        </div>
+        <div class="game-hud-corner">
+          <span class="game-hud-label">Candidate Profile · 2026</span>
+          <span class="game-hud-status">● READY TO DEPLOY</span>
+        </div>
+      </div>
+
+      <!-- Left panel: Skill Set -->
+      <div class="game-panel game-panel-left">
+        <div class="game-panel-title">Skill Set</div>
+        <div class="game-panel-tabs">
+          <button class="game-tab active">Technical</button>
+          <button class="game-tab">Product</button>
+          <button class="game-tab">Growth</button>
+        </div>
+
+        <div class="skill-tree-list">
+          <div class="game-skill-item" onclick="openSkillDetail('crossfunctional', this)">
+            <div class="game-skill-icon">⬡</div>
+            <div>
+              <div class="game-skill-name">跨职能补位</div>
+              <div class="game-skill-sub">CS Background · 技术–产品翻译层</div>
+            </div>
+            <div class="game-skill-pts">
+              <span>COVERAGE +3</span>
+              <span>SPEED +2</span>
+            </div>
+          </div>
+
+          <div class="game-skill-item" onclick="openSkillDetail('product', this)">
+            <div class="game-skill-icon">◈</div>
+            <div>
+              <div class="game-skill-name">产品设计 &amp; 用户调研</div>
+              <div class="game-skill-sub">AI UX · 异常态 · 多轮对话</div>
+            </div>
+            <div class="game-skill-pts">
+              <span>EMPATHY +3</span>
+            </div>
+          </div>
+
+          <div class="game-skill-item" onclick="openSkillDetail('frontend', this)">
+            <div class="game-skill-icon">◈</div>
+            <div>
+              <div class="game-skill-name">前端开发 &amp; 原型落地</div>
+              <div class="game-skill-sub">React · Mock Pipeline · 假设验证</div>
+            </div>
+            <div class="game-skill-pts">
+              <span>BUILD +3</span>
+            </div>
+          </div>
+
+          <div class="game-skill-item" onclick="openSkillDetail('data', this)">
+            <div class="game-skill-icon">◈</div>
+            <div>
+              <div class="game-skill-name">效果评测 &amp; 决策闭环</div>
+              <div class="game-skill-sub">LLM Eval · Prompt 优化 · 数据决策</div>
+            </div>
+            <div class="game-skill-pts">
+              <span>PRECISION +2</span>
+            </div>
+          </div>
+
+          <div class="game-skill-item" onclick="openSkillDetail('growth', this)">
+            <div class="game-skill-icon">◈</div>
+            <div>
+              <div class="game-skill-name">产品冷启动 &amp; 用户增长</div>
+              <div class="game-skill-sub">Cold Start · 反馈飞轮 · 内测运营</div>
+            </div>
+            <div class="game-skill-pts">
+              <span>GROWTH +2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right panel: Attributes -->
+      <div class="game-panel game-panel-right">
+        <div class="game-panel-title">Candidate Attributes</div>
+
+        <div class="game-attr-row">
+          <span class="game-attr-label">Technical</span>
+          <div class="game-attr-track"><div class="game-attr-fill" style="width:90%"></div></div>
+          <span class="game-attr-num">9/10</span>
+        </div>
+        <div class="game-attr-row">
+          <span class="game-attr-label">Product</span>
+          <div class="game-attr-track"><div class="game-attr-fill" style="width:90%"></div></div>
+          <span class="game-attr-num">9/10</span>
+        </div>
+        <div class="game-attr-row">
+          <span class="game-attr-label">Empathy</span>
+          <div class="game-attr-track"><div class="game-attr-fill" style="width:100%"></div></div>
+          <span class="game-attr-num">10/10</span>
+        </div>
+        <div class="game-attr-row">
+          <span class="game-attr-label">Data</span>
+          <div class="game-attr-track"><div class="game-attr-fill" style="width:80%"></div></div>
+          <span class="game-attr-num">8/10</span>
+        </div>
+        <div class="game-attr-row">
+          <span class="game-attr-label">Velocity</span>
+          <div class="game-attr-track"><div class="game-attr-fill" style="width:90%"></div></div>
+          <span class="game-attr-num">9/10</span>
+        </div>
+
+        <div class="game-attr-divider"></div>
+        <div class="game-total-row">
+          <span class="game-total-label">Total Skill Points</span>
+          <span class="game-total-val">45/50</span>
+        </div>
+
+        <div class="game-actions">
+          <button class="game-btn game-btn-pass">[ - ] Pass</button>
+          <button class="game-btn game-btn-commit" onclick="document.getElementById('thesis').scrollIntoView({behavior:'smooth'})">[ + ] Commit Hire</button>
+        </div>
+      </div>
+
+      <!-- Bottom bar: TOC + info -->
+      <div class="game-hud-bottom">
+        <a href="#trial" class="game-bot-item game-bot-link">
+          <span class="game-bot-key">01</span>
+          <span class="game-bot-val">单点 Skill 试跑</span>
+        </a>
+        <a href="#issues" class="game-bot-item game-bot-link">
+          <span class="game-bot-key">02</span>
+          <span class="game-bot-val">试跑暴露的问题</span>
+        </a>
+        <a href="#ch04" class="game-bot-item game-bot-link">
+          <span class="game-bot-key">03</span>
+          <span class="game-bot-val">行业洞察</span>
+        </a>
+        <a href="#actions" class="game-bot-item game-bot-link">
+          <span class="game-bot-key">04</span>
+          <span class="game-bot-val">产品设计展望</span>
+        </a>
+        <a href="#table" class="game-bot-item game-bot-link">
+          <span class="game-bot-key">附录</span>
+          <span class="game-bot-val">证据与线索表</span>
+        </a>
+      </div>
+
+      <!-- Scroll cue -->
+      <div class="game-scroll-cue">
+        <span>Scroll</span>
+        <div class="game-scroll-arrow"></div>
+      </div>
+
+    </div>
+
+    <!-- Skill detail backdrop (click to close) -->
+    <div class="game-skill-backdrop" id="gameSkillBackdrop" onclick="closeSkillDetail()"></div>
+
+    <!-- SVG connector: skill item → popup -->
+    <svg id="skillConnectSvg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="lineGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <!-- glow layer -->
+      <path id="skillConnectGlow" fill="none" stroke="rgba(22,119,255,0.25)" stroke-width="6" stroke-linecap="round"/>
+      <!-- main line -->
+      <path id="skillConnectPath" fill="none" stroke="rgba(22,119,255,0.75)" stroke-width="1.5" stroke-linecap="round" filter="url(#lineGlow)"/>
+      <!-- endpoint dots -->
+      <circle id="skillConnectDot1" r="4" fill="rgba(22,119,255,0.8)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+      <circle id="skillConnectDot2" r="4" fill="rgba(22,119,255,0.8)" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
+    </svg>
+
+    <!-- Skill detail popup -->
+    <div class="game-skill-detail" id="gameSkillDetail">
+      <div class="gsd-header">
+        <div class="gsd-icon" id="gsdIcon"></div>
+        <div class="gsd-titles">
+          <div class="gsd-name" id="gsdName"></div>
+          <div class="gsd-name-en" id="gsdNameEn"></div>
+        </div>
+        <button class="gsd-close" onclick="closeSkillDetail()">×</button>
+      </div>
+      <div class="gsd-pts" id="gsdPts"></div>
+      <div class="gsd-lore" id="gsdLore"></div>
+      <div id="gsdAttrs"></div>
+      <div class="gsd-tags" id="gsdTags"></div>
+    </div>
+
+  </section>
+
   <div class="shell">
     <section id="thesis" class="hero">
       <div class="hero-main">
         <div class="eyebrow">AI Payment PM Interview Map</div>
-        <h1>从 0.01 元 A402 实测<br>看 <span class="gradient-text">AI 付</span> 成为 Agent 交易可信网关</h1>
+        <h1>从 0.01 元 A402 实测<br>看 <span class="gradient-text">AI 付</span> 成为 Agent 交易市场的可信网关</h1>
         <p class="subtitle">
           我会把 AI 付定义成面向智能体交易的<span class="highlight">信任和工具协议层</span>。支付宝做 AI 化的优势不只在支付，而在<span class="highlight">平台型服务网络</span>：Agent 可以把支付、医保、政务、商户和生活服务这些散点能力重新编排成任务型服务。
           这次 0.01 元 A402 demo 验证的是一个<span class="highlight">最小可信交易闭环</span>；由此我判断，AI 付真正值得做大的方向不是支付按钮，而是 <span class="highlight">Agent Payment Runtime</span>，也就是把授权、预算、确认、支付、履约、风控和追责统一成<span class="highlight">可信动作网关</span>。
         </p>
       </div>
-      <aside class="hero-side">
+      <aside class="hero-side" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
         <div class="metric">
-          <b>01 为什么是支付宝</b>
-          <span>它不是单一支付工具，而是账号、支付、商户、服务履约和风控组成的平台网络。Agent 编排越复杂，这种网络越有价值。</span>
+          <b>01 单点 Skill 试跑</b>
+          <span>0.01 元 A402 demo 跑通最小可信交易闭环：钱包授权 → 支付确认 → 资源获取 → 履约回执，验证 Agent 能在高风险动作里遵守边界。</span>
         </div>
         <div class="metric">
-          <b>02 AI 付切哪一层</b>
-          <span>核心不是付款按钮，而是高风险动作网关：当 Agent 替用户花钱、授权或签约时，统一做意图校验、预算边界、确认、执行和审计。</span>
+          <b>02 试跑暴露的问题</b>
+          <span>运行接入、交易控制、商业闭环三类产品问题暴露：跨框架一致性不足、高风险动作缺少标准状态机、支付成功不等于任务成功。</span>
         </div>
         <div class="metric">
-          <b>03 壁垒怎么形成</b>
-          <span>如果 A402、Skill/MCP、沙箱和能力市场先连成体系，支付宝就不只是能力提供者，而是在定义 Agent 商业交易的基础规则。</span>
+          <b>03 行业洞察</b>
+          <span>Agentic Commerce 需要六类基建：身份、授权、交易语义、支付凭证、风控责任、生态连接。Google AP2 用 Mandate + Trusted Surface + Evidence Chain 给出协议样板。</span>
+        </div>
+        <div class="metric">
+          <b>04 产品设计展望</b>
+          <span>AI 付不应只是支付按钮，而是 Agent 时代的可信动作网关——站在 Infrastructure 第 7 层（Action Gateway）和第 8 层（真实世界副作用）之间，成为 A2A 市场的授权、执行与追责基础设施。</span>
         </div>
       </aside>
-      <nav class="toc" aria-label="页面目录">
-        <a href="#trial">
-          <b>01 单点 Skill 试跑</b>
-          <span>从 Dry Run 到 A402 支付闭环，看最小真实链路。</span>
-        </a>
-        <a href="#issues">
-          <b>02 试跑暴露的问题</b>
-          <span>运行接入、交易控制、商业闭环三类产品问题。</span>
-        </a>
-        <a href="#actions">
-          <b>03 产品设计展望</b>
-          <span>从支付节点到动作网关，再到支付宝服务生态。</span>
-        </a>
-        <a href="#table">
-          <b>04 证据与线索表</b>
-          <span>payment-skills、开放平台和能力市场线索汇总。</span>
-        </a>
-      </nav>
     </section>
 
     <section id="trial" class="section">
@@ -1228,8 +2146,146 @@ https://aipayapi.alipay.com/merchant/aipay/introduce</pre>
       </div>
     </section>
 
+    <!-- ══════════════════════════════════════════
+         04 行业洞察
+    ══════════════════════════════════════════ -->
+    <section id="ch04" class="section">
+      <h2>03 行业洞察</h2>
+      <p>
+        从 0.01 元 demo 退一步看行业：Agentic Commerce 不是"AI 帮用户点支付按钮"，而是交易入口、授权方式、商户连接、支付风控和责任划分的一次系统性重构。理解这三层——行业愿景、所需基建、协议样板——才能判断 AI 付的正确方向。
+      </p>
+
+      <!-- ── A. 行业愿景 ── -->
+      <div class="chain-block" id="vision">
+        <h3>A · 行业愿景：交易入口从 App / 搜索迁移到 Agent 意图</h3>
+        <p>支付的核心假设正在断裂：过去二十年默认"支付由人在可信界面发起"，Agent 进入链路后这个假设被打破。交易对象从订单前移到意图——用户只需表达目标，Agent 负责发现、比较、授权、执行和追踪。</p>
+      </div>
+      <div class="compare-grid">
+        <article class="compare-panel">
+          <h3>今天：人驱动，点击付款</h3>
+          <p>用户打开 App 或网页，搜索、浏览、比价，平台推荐，用户确认订单并主动完成付款。核心入口是页面、搜索框、推荐流和支付按钮。</p>
+          <ul>
+            <li><strong>入口：</strong>App 首页、搜索框、推荐流、支付按钮</li>
+            <li><strong>操作主体：</strong>人浏览、人选择、人点击、人付款</li>
+            <li><strong>交易对象：</strong>订单——金额、商户、支付工具、状态</li>
+            <li><strong>核心假设：</strong>支付由人在可信界面发起</li>
+          </ul>
+        </article>
+        <article class="compare-panel">
+          <h3>未来：意图驱动，Agent 编排</h3>
+          <p>用户表达目标，Agent 理解任务、发现商户、比较供给，在授权边界内生成订单、完成支付，并持续追踪履约。</p>
+          <ul>
+            <li><strong>入口：</strong>自然语言意图、Agent 任务规划、钱包授权界面</li>
+            <li><strong>操作主体：</strong>Agent 规划执行；人设定边界与例外规则</li>
+            <li><strong>交易对象：</strong>意图——目标、约束、执行者、时机、替代规则</li>
+            <li><strong>核心假设：</strong>支付在预授权范围内自动或半自动触发</li>
+          </ul>
+        </article>
+      </div>
+      <div class="flow">
+        <div class="node"><b>用户意图</b><span>一句话表达目标、预算、偏好，不再逐步操作。</span></div>
+        <div class="node"><b>Agent 规划</b><span>拆解任务，选择 Skill / MCP / 商户，决定执行顺序。</span></div>
+        <div class="node"><b>商户发现</b><span>在供给池比较商品、价格、履约时效和服务评分。</span></div>
+        <div class="node"><b>授权判断</b><span>对照用户边界：金额上限、商户范围、二次确认规则。</span></div>
+        <div class="node"><b>支付执行</b><span>在预授权内完成支付，或在 Trusted Surface 触发确认。</span></div>
+        <div class="node"><b>履约追踪</b><span>跟踪配送 / 服务完成，形成可审计证据链。</span></div>
+      </div>
+
+      <!-- ── B. 基建倒推 ── -->
+      <div class="chain-block" id="infra-six">
+        <h3>B · 基建倒推：身份 · 授权 · 交易语义 · 支付凭证 · 风控责任 · 生态连接</h3>
+        <p>旧支付基础设施有三个核心假设同时失效：支付由人发起、商户面向人展示、责任由人承担。从这三个破口倒推，Agentic Commerce 需要六类全新基础设施——Google AP2 明确将问题概括为 Authorization · Authenticity · Accountability。</p>
+      </div>
+      <div class="cards three">
+        <article class="card">
+          <span class="tag">01 · Identity</span>
+          <strong>身份基建</strong>
+          <p>识别 Agent 是谁、属于哪个用户、来自哪个平台、权限是否被撤销。传统身份只识别人和商户；Agentic Commerce 增加第三类主体——代理。需要 Agent registry、attestation 和 reputation 能力区分可信 Agent 与恶意自动化脚本。</p>
+        </article>
+        <article class="card">
+          <span class="tag">02 · Authorization</span>
+          <strong>授权基建</strong>
+          <p>授权对象不只是"支付"，而是一组任务边界：金额上限、时间范围、商户范围、商品范围、替代规则、确认规则、支付工具、撤销规则。Google AP2 用 Mandate（防篡改签名授权合约）承载这些约束，是授权基建的最佳参考实现。</p>
+        </article>
+        <article class="card">
+          <span class="tag">03 · Semantics</span>
+          <strong>交易语义基建</strong>
+          <p>Agent 支付必须绑定"买什么"，不能只绑定"付多少钱"。Checkout 内容需要结构化锁定：商品明细、数量、价格、商户身份、履约方式、售后规则、订单 hash。同样 100 元，买演唱会票和买会员套餐的风险完全不同。</p>
+        </article>
+        <article class="card">
+          <span class="tag">04 · Credentials</span>
+          <strong>支付凭证基建</strong>
+          <p>Agent 不应拿到完整账户权限，而是 scoped token：只能给指定商户、指定金额范围、指定 checkout hash 使用，只能消费一次。Mastercard Agent Pay、Visa Intelligent Commerce 均强调更细粒度的 token framework 和 spending limits。</p>
+        </article>
+        <article class="card">
+          <span class="tag">05 · Risk &amp; Accountability</span>
+          <strong>风控责任基建</strong>
+          <p>新型风险：Agent 越权购买、Prompt injection 诱导错误决策、Agent 重试重复扣款、授权被 replay。风控对象从"交易风险"扩展到"Agent 行为风险"，需要 mandate risk scoring、intent-consistency check 和 runtime verification。</p>
+        </article>
+        <article class="card">
+          <span class="tag">06 · Ecosystem</span>
+          <strong>生态连接基建</strong>
+          <p>Agent 要完成交易，需要结构化商品 / 服务 API、Agent-ready checkout、标准化库存 / 价格 / 配送 / 售后接口，以及商户可信评分和履约回执。Google UCP 面向完整商业生命周期；AP2 聚焦授权、支付和证据链。</p>
+        </article>
+      </div>
+      <div class="note">
+        支付宝在六类基建中均有积累（身份账户体系、签约代扣、预授权 scoped token、反欺诈风控），但需要被重新产品化，才能面向 Agent 主体开放，而非只服务人类用户。
+      </div>
+
+      <!-- ── C. AP2 解读 ── -->
+      <div class="chain-block" id="ap2">
+        <h3>C · AP2 解读：Mandate + Trusted Surface + Evidence Chain</h3>
+        <p>Google Agent Payments Protocol（AP2）不是新支付方式，也不替代卡组织或钱包，而是定义 Agent 代表用户交易时的授权与证据协议。2026 年捐给 FIDO Alliance，目标是行业标准，而非单点产品。</p>
+      </div>
+      <div class="infra-callout">
+        <div class="infra-kicker">AP2 Core Concepts</div>
+        <h3>三个概念构成完整信任链</h3>
+        <p>AP2 的定位：当 Agent 代表用户交易时，用可验证授权和证据链证明这笔交易"被授权、未篡改、可追责"。它是 payment-agnostic framework，建立在卡、稳定币、实时银行转账等支付方式之上。</p>
+        <div class="infra-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr))">
+          <div class="infra-card">
+            <b>Mandate：授权合约</b>
+            <span>把用户意图、授权边界、最终购物车和支付凭证串成证据链。Intent Mandate 记录用户原始意图与约束；Cart Mandate 锁定最终商品、价格、商户；支付凭证绑定 Cart Mandate 后不可篡改。</span>
+          </div>
+          <div class="infra-card">
+            <b>Trusted Surface：可信界面</b>
+            <span>关键授权不能交给 LLM 自己解释，必须由可信界面向用户展示交易内容、授权范围和风险提示。对支付宝而言，钱包 App 确认页、授权管理页可直接承担 Trusted Surface 角色。</span>
+          </div>
+          <div class="infra-card">
+            <b>Evidence Chain：证据链</b>
+            <span>用户授权了什么 → Agent 做了什么 → 商户提交了什么 → 支付绑定了什么，四段构成不可抵赖审计链路。交易、履约、争议处理都能回溯，明确责任归属。</span>
+          </div>
+        </div>
+      </div>
+      <div class="compare-grid">
+        <article class="compare-panel">
+          <h3>Human Present 场景</h3>
+          <p>用户在线，Agent 提供方案，用户通过 Trusted Surface 实时确认最终购物车和付款。</p>
+          <ul>
+            <li><strong>适合：</strong>高金额、首次商户、敏感品类</li>
+            <li><strong>Trusted Surface：</strong>钱包确认页展示 Cart Mandate 内容</li>
+            <li><strong>风险等级：</strong>相对低，用户实时校验授权内容</li>
+            <li><strong>体验：</strong>Agent 省去搜索比价，用户只做最终确认</li>
+          </ul>
+        </article>
+        <article class="compare-panel">
+          <h3>Human Not Present 场景</h3>
+          <p>用户提前授权规则，Agent 在用户不在线时自动执行，如"票开售且价格低于 1200 元就买"。</p>
+          <ul>
+            <li><strong>适合：</strong>有明确条件的例行任务、低金额补货</li>
+            <li><strong>Trusted Surface：</strong>授权配置界面 + 事后交易通知</li>
+            <li><strong>风险等级：</strong>较高，需要 Intent Mandate 严格约束执行边界</li>
+            <li><strong>体验：</strong>真正的自主 Agent 商业化场景，也是最高风险区</li>
+          </ul>
+        </article>
+      </div>
+      <div class="note">
+        AP2 对 AI 付的最大启示：支付宝不应只做支付通道，而应成为 Mandate 的发行方和 Trusted Surface 的承载方——钱包是用户授权 Agent 的可见控制中心，AI 付是 Mandate 生命周期（创建 → 锁定 → 绑定 → 归档）的基础设施层。
+      </div>
+    </section>
+
+
     <section id="actions" class="section">
-      <h2>03 产品设计展望</h2>
+      <h2>04 产品设计展望</h2>
       <p>
         如果我是这个方向的 PM，我不会把未来只定义成“支付工具优化”。payment-skills 验证的是一类高风险动作节点如何被 Agent 约束执行；更大的机会，是把这套授权、确认、履约、追责范式扩展到支付宝整体服务生态，让 Agent 能编排支付、医保、政务、商户、生活服务等多类任务。
       </p>
@@ -1332,6 +2388,7 @@ https://aipayapi.alipay.com/merchant/aipay/introduce</pre>
         长期 Action：不是让 <code>SKILL.md</code> 自己完成状态机产品化，而是在 Skill 之上形成 Agent Payment Runtime / Ant Service Agent Runtime。前者先把支付这类高风险交易动作做稳，后者再把支付宝生态里的服务发现、跨域授权、服务编排、商户履约和责任追踪做成平台能力。用 Agent Infrastructure 的语言讲，就是把 7「Action Gateway」做成行业标准，把 8「真实世界副作用」纳入可授权、可确认、可审计、可补偿的治理体系。
       </div>
     </section>
+
 
     <section id="table" class="section">
       <h2>附录：payment-skills 与平台线索表</h2>
@@ -1785,5 +2842,135 @@ https://aipayapi.alipay.com/merchant/aipay/introduce</pre>
     </section>
 
   </div>
+<script>
+const SKILL_DATA = {
+  crossfunctional: {
+    icon: '⬡',
+    name: '跨职能补位',
+    nameEn: 'Cross-Functional Bridge',
+    pts: ['COVERAGE +3', 'SPEED +2'],
+    lore: 'CS 背景使我在 AI 产品团队中能充当真正的技术–产品翻译层：读懂 Prompt 设计的边界、理解模型能力瓶颈，也能直接写前端 Demo 对齐验证目标。在 4–6 人小团队中，一人覆盖产品定义、原型实现、数据评测三个环节，让迭代不因角色空缺卡住，维持「一周一版本」的节奏。',
+    attrs: [
+      { label: 'Role Coverage', pct: 92 },
+      { label: 'Iteration Speed', pct: 85 },
+      { label: 'Tech-Product Bridge', pct: 90 },
+    ],
+    tags: ['CS 底座', 'Prompt 理解', '技术翻译层', '前端实现', '多角色覆盖'],
+  },
+  product: {
+    icon: '◈',
+    name: '产品设计 & 用户调研',
+    nameEn: 'Product Design & User Research',
+    pts: ['EMPATHY +3'],
+    lore: '当用户说不清楚「想让 AI 干什么」时，带着好奇心去追问，帮他们拆解真实意图、定义可衡量的成功指标，把模糊期待转化为可执行的产品方向。做出来之后，再带着尊重去听「哪里不好用」——真正的问题往往藏在抱怨背后。已形成从「目标用户 → 功能拆解 → 设计理念 → 用户动线 → 关键场景 → 原型验证」的完整 SOP，并持续打磨 AI 产品特有的设计难题：异常态如何降级、不确定性怎么向用户透出、多轮对话的中断与恢复如何设计。',
+    attrs: [
+      { label: 'User Empathy', pct: 90 },
+      { label: 'Requirement Clarity', pct: 85 },
+      { label: 'AI UX Design', pct: 88 },
+    ],
+    tags: ['用户访谈', '需求拆解', 'AI 异常态', '多轮对话', '降级设计'],
+  },
+  frontend: {
+    icon: '◈',
+    name: '前端开发 & 原型落地',
+    nameEn: 'Frontend Dev & Prototyping',
+    pts: ['BUILD +3'],
+    lore: 'AI 产品不确定性高，等研发实现再验证代价太大——直接写可交互的前端原型，在模拟环境中构造完整数据链路，让假设在投入开发前先得到验证。能提前暴露字段定义模糊、接口边界不清、AI 输出异常态未覆盖等问题，将验证成本从「版本」压缩到「天」。',
+    attrs: [
+      { label: 'Prototype Speed', pct: 90 },
+      { label: 'Hypothesis Validation', pct: 88 },
+      { label: 'Dev Handoff Quality', pct: 82 },
+    ],
+    tags: ['React', 'Mock Data Pipeline', 'AI 原型验证', '假设验证', '迭代提速'],
+  },
+  data: {
+    icon: '◈',
+    name: '效果评测 & 决策闭环',
+    nameEn: 'Effect Evaluation & Decision Loop',
+    pts: ['PRECISION +2'],
+    lore: 'AI 产品的效果不能靠感觉——从原始数据中抽取关键指标，搭建可复现的评测框架，结合用户行为与产品目标快速判断「这个版本的模型 / 策略好不好」。在高不确定性阶段，让团队用数据而非直觉决定哪些问题优先解决、哪些功能值得继续推进。',
+    attrs: [
+      { label: 'LLM Eval Design', pct: 85 },
+      { label: 'Metric Extraction', pct: 82 },
+      { label: 'Decision Velocity', pct: 83 },
+    ],
+    tags: ['效果评测', 'LLM 评测', 'Prompt 优化', '数据决策', '优先级判断'],
+  },
+  growth: {
+    icon: '◈',
+    name: '产品冷启动 & 用户增长',
+    nameEn: 'Cold Start & Growth',
+    pts: ['GROWTH +2'],
+    lore: 'AI 产品冷启动难在：用户不知道怎么用、模型效果依赖数据但初期数据稀缺、反馈信号弱。已实战内测阶段的用户招募、持续反馈通路设计与增长策略，建立「用户行为 → 模型改进 → 体验提升 → 更多用户」的正向飞轮，在编制有限的条件下维持有效的用户覆盖与数据积累。',
+    attrs: [
+      { label: 'Cold Start Design', pct: 80 },
+      { label: 'Feedback Loop', pct: 86 },
+      { label: 'Growth Velocity', pct: 78 },
+    ],
+    tags: ['AI 冷启动', '内测运营', '反馈飞轮', '用户增长', '数据积累'],
+  },
+};
+
+function openSkillDetail(key, el) {
+  const skill = SKILL_DATA[key];
+  if (!skill) return;
+  document.querySelectorAll('.game-skill-item').forEach(item => item.classList.remove('gs-active'));
+  if (el) el.classList.add('gs-active');
+  document.getElementById('gsdIcon').textContent = skill.icon;
+  document.getElementById('gsdName').textContent = skill.name;
+  document.getElementById('gsdNameEn').textContent = skill.nameEn;
+  document.getElementById('gsdLore').textContent = skill.lore;
+  document.getElementById('gsdPts').innerHTML = skill.pts
+    .map(p => `<span class="gsd-pt-badge">${p}</span>`).join('');
+  document.getElementById('gsdAttrs').innerHTML = skill.attrs
+    .map(a => `
+      <div class="gsd-attr-row">
+        <span class="gsd-attr-label">${a.label}</span>
+        <div class="gsd-attr-track"><div class="gsd-attr-fill" style="width:${a.pct}%"></div></div>
+        <span class="gsd-attr-num">${a.pct}/100</span>
+      </div>`).join('');
+  document.getElementById('gsdTags').innerHTML = skill.tags
+    .map(t => `<span class="gsd-tag">${t}</span>`).join('');
+  document.getElementById('gameSkillBackdrop').classList.add('open');
+  document.getElementById('gameSkillDetail').classList.add('open');
+
+  // Draw connector line from skill item to popup
+  requestAnimationFrame(() => {
+    if (!el) return;
+    const section = document.querySelector('.game-hero');
+    const sectionRect = section.getBoundingClientRect();
+    const itemRect = el.getBoundingClientRect();
+    const popupRect = document.getElementById('gameSkillDetail').getBoundingClientRect();
+
+    const x1 = Math.round(itemRect.right - sectionRect.left);
+    const y1 = Math.round(itemRect.top + itemRect.height / 2 - sectionRect.top);
+    const x2 = Math.round(popupRect.left - sectionRect.left);
+    const y2 = Math.round(popupRect.top + popupRect.height / 2 - sectionRect.top);
+    const cx = Math.round((x1 + x2) / 2);
+    const d = `M ${x1} ${y1} C ${cx} ${y1} ${cx} ${y2} ${x2} ${y2}`;
+
+    document.getElementById('skillConnectPath').setAttribute('d', d);
+    document.getElementById('skillConnectGlow').setAttribute('d', d);
+    document.getElementById('skillConnectDot1').setAttribute('cx', x1);
+    document.getElementById('skillConnectDot1').setAttribute('cy', y1);
+    document.getElementById('skillConnectDot2').setAttribute('cx', x2);
+    document.getElementById('skillConnectDot2').setAttribute('cy', y2);
+
+    // Reset animation by replacing the element's class
+    const svg = document.getElementById('skillConnectSvg');
+    svg.classList.remove('open');
+    svg.offsetHeight; // force reflow so animation restarts
+    svg.classList.add('open');
+  });
+}
+
+function closeSkillDetail() {
+  document.getElementById('gameSkillBackdrop').classList.remove('open');
+  document.getElementById('gameSkillDetail').classList.remove('open');
+  document.getElementById('skillConnectSvg').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSkillDetail(); });
+</script>
 </body>
 </html>
