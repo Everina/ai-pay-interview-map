@@ -230,15 +230,56 @@
       font-weight: 800;
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      margin-bottom: 10px;
       display: block;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 22px;
+      margin-bottom: 12px;
+    }
+
+    .card.priority-card {
+      border-color: rgba(22, 119, 255, 0.38);
+      background: linear-gradient(180deg, rgba(22, 119, 255, 0.075), rgba(255, 255, 255, 0.92));
+      box-shadow: inset 0 0 0 1px rgba(22, 119, 255, 0.08), 0 10px 28px rgba(22, 119, 255, 0.08);
+    }
+
+    .card.priority-card .tag {
+      color: var(--cyan);
+    }
+
+    .priority-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 8px;
+      border: 1px solid rgba(22, 119, 255, 0.28);
+      border-radius: 999px;
+      background: rgba(22, 119, 255, 0.08);
+      color: var(--cyan);
+      font-size: 10px;
+      font-weight: 850;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .card strong {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 5px;
       font-size: 14px;
       font-weight: 800;
+    }
+
+    .card-subtitle {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.45;
+      margin-bottom: 10px;
     }
 
     .card p {
@@ -904,6 +945,46 @@
       background: var(--panel);
     }
 
+    .competitor-wrap {
+      margin-top: 16px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+
+    .competitor-table {
+      min-width: 980px;
+    }
+
+    .competitor-table th {
+      white-space: nowrap;
+    }
+
+    .competitor-table th,
+    .competitor-table td {
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .competitor-table td:first-child {
+      width: 210px;
+      font-weight: 850;
+      color: var(--text);
+    }
+
+    .competitor-table td:nth-child(2) {
+      width: 210px;
+    }
+
+    .competitor-table td:nth-child(3) {
+      width: 360px;
+    }
+
+    .competitor-table td:nth-child(4) {
+      width: 260px;
+    }
+
     table {
       width: 100%;
       min-width: 1480px;
@@ -1049,6 +1130,7 @@
       .compare-grid { grid-template-columns: 1fr; }
       .infra-grid { grid-template-columns: 1fr; }
       .ecosystem-grid { grid-template-columns: 1fr; }
+      .vision-roadmap { grid-template-columns: 1fr; }
       .case-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .io-pack { grid-template-columns: 1fr; }
       .timeline-body { grid-template-columns: 1fr; }
@@ -1206,6 +1288,28 @@
     }
 
     /* Left panel */
+    .game-left-stack {
+      position: absolute;
+      top: 76px;
+      left: 26px;
+      width: 364px;
+      display: grid;
+      gap: 10px;
+      pointer-events: auto;
+    }
+
+    .game-left-stack .game-panel {
+      position: relative;
+    }
+
+    .game-left-stack .game-panel-left {
+      top: auto;
+      left: auto;
+      width: 100%;
+      max-height: none;
+      overflow-y: visible;
+    }
+
     .game-panel-left {
       top: 76px;
       left: 26px;
@@ -1216,6 +1320,138 @@
 
     .game-panel-left::-webkit-scrollbar { width: 2px; }
     .game-panel-left::-webkit-scrollbar-thumb { background: var(--line); }
+
+    .game-gear-panel {
+      padding: 10px 12px 12px;
+      cursor: pointer;
+      transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .game-gear-panel:hover,
+    .game-gear-panel:focus-visible {
+      border-color: rgba(22,119,255,0.38);
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 4px 20px rgba(22,119,255,0.09), 0 1px 4px rgba(0,0,0,0.06);
+      outline: none;
+    }
+
+    .game-gear-panel .game-panel-title {
+      margin-bottom: 8px;
+      padding-bottom: 7px;
+    }
+
+    .game-gear-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0;
+      position: relative;
+      padding: 6px 4px 2px;
+    }
+
+    .game-gear-grid::before {
+      content: "";
+      position: absolute;
+      left: 32px;
+      right: 32px;
+      top: 22px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(22,119,255,0.2), rgba(77,151,108,0.36), rgba(208,112,0,0.3));
+    }
+
+    .game-gear-grid::after {
+      content: "";
+      position: absolute;
+      left: 32px;
+      right: 32px;
+      top: 20px;
+      height: 5px;
+      background: radial-gradient(circle, rgba(22,119,255,0.26) 0 1px, transparent 2px);
+      background-size: 18px 5px;
+      opacity: 0.58;
+    }
+
+    .gear-item {
+      --gear-color: #1677FF;
+      --gear-glow: rgba(22,119,255,0.28);
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      position: relative;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--gear-color);
+      padding: 0;
+      display: grid;
+      place-items: center;
+      font: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+      z-index: 1;
+      transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+    }
+
+    .gear-item::before {
+      content: "";
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--gear-color) 12%, transparent);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .gear-wallet {
+      --gear-color: #1677FF;
+      --gear-glow: rgba(22,119,255,0.32);
+      --gear-bg: rgba(22,119,255,0.08);
+    }
+
+    .gear-credit {
+      --gear-color: #4D976C;
+      --gear-glow: rgba(77,151,108,0.28);
+      --gear-bg: rgba(77,151,108,0.075);
+    }
+
+    .gear-market {
+      --gear-color: #D07000;
+      --gear-glow: rgba(208,112,0,0.25);
+      --gear-bg: rgba(208,112,0,0.07);
+    }
+
+    .game-gear-panel:hover .gear-wallet {
+      transform: translateY(-2px);
+    }
+
+    .game-gear-panel:hover .gear-wallet::before {
+      opacity: 1;
+    }
+
+    .gear-icon {
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(22, 119, 255, 0.18);
+      border-radius: 5px;
+      background: rgba(22, 119, 255, 0.07);
+      display: grid;
+      place-items: center;
+      transition: border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .game-gear-panel:hover .gear-wallet .gear-icon {
+      border-color: rgba(22, 119, 255, 0.42);
+      background: rgba(22, 119, 255, 0.12);
+      box-shadow: 0 0 14px rgba(22,119,255,0.16);
+    }
+
+    .gear-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      filter: drop-shadow(0 1px 3px var(--gear-glow));
+    }
+
 
     .game-panel-tabs {
       display: flex;
@@ -1583,6 +1819,169 @@
     }
     .game-skill-detail.open { display: block; }
 
+    .game-vision-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: none;
+      background: rgba(245,244,240,0.08);
+    }
+    .game-vision-backdrop.open { display: block; }
+
+    .game-vision-detail {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 6;
+      width: 780px;
+      max-width: 92vw;
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(22,119,255,0.24);
+      border-radius: var(--radius);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 46px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.86);
+      padding: 22px;
+      display: none;
+      pointer-events: auto;
+    }
+    .game-vision-detail.open { display: block; }
+
+    .vmd-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .vmd-icon {
+      width: 46px;
+      height: 46px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(22,119,255,0.24);
+      border-radius: 8px;
+      background: rgba(22,119,255,0.08);
+      color: var(--cyan);
+    }
+
+    .vmd-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: currentColor;
+    }
+
+    .vmd-titles { flex: 1; min-width: 0; }
+
+    .vmd-kicker {
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      color: var(--weak);
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .vmd-title {
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 850;
+      letter-spacing: -0.25px;
+    }
+
+    .vmd-close {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .vmd-close:hover { background: var(--bg); color: var(--text); }
+
+    .vmd-body {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.78;
+    }
+
+    .vmd-body p {
+      margin: 0 0 12px;
+    }
+
+    .vmd-body strong {
+      color: var(--text);
+      font-weight: 850;
+    }
+
+    .vision-roadmap {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .vision-step {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.68);
+      padding: 12px;
+    }
+
+    .vision-step span {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--cyan);
+      font-family: "SFMono-Regular", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 9px;
+      font-weight: 850;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .vision-step b {
+      display: block;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .vision-scenario {
+      margin-top: 12px;
+      border: 1px solid rgba(22,119,255,0.2);
+      border-radius: var(--radius);
+      background: rgba(22,119,255,0.045);
+      padding: 14px;
+    }
+
+    .vision-scenario ol {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .vision-scenario li + li {
+      margin-top: 4px;
+    }
+
+    .vision-final {
+      margin-top: 14px;
+      padding-top: 13px;
+      border-top: 1px solid var(--line);
+      color: var(--text);
+      font-weight: 800;
+    }
+
     .gsd-header {
       display: flex;
       align-items: center;
@@ -1711,18 +2110,23 @@
     }
 
     @media (max-width: 860px) {
-      .game-panel-left { width: 312px; }
+      .game-left-stack { width: 312px; }
       .game-panel-right { width: 268px; }
     }
 
     @media (max-width: 680px) {
-      .game-panel-left { display: none; }
+      .game-left-stack { display: none; }
       .game-panel-right {
         left: 16px;
         right: 16px;
         width: auto;
         top: auto;
         bottom: 80px;
+      }
+      .game-vision-detail {
+        width: calc(100vw - 28px);
+        max-height: calc(100vh - 72px);
+        padding: 18px;
       }
       .game-hud-bottom { display: none; }
       .game-scroll-cue { bottom: 26px; }
@@ -1754,69 +2158,113 @@
         </div>
       </div>
 
-      <!-- Left panel: Skill Set -->
-      <div class="game-panel game-panel-left">
-        <div class="game-panel-title">Skill Set</div>
-        <div class="game-panel-tabs">
-          <button class="game-tab active">Technical</button>
-          <button class="game-tab">Product</button>
-          <button class="game-tab">Growth</button>
+      <div class="game-left-stack">
+        <!-- Left panel: Skill Set -->
+        <div class="game-panel game-panel-left">
+          <div class="game-panel-title">Skill Set</div>
+          <div class="game-panel-tabs">
+            <button class="game-tab active">Technical</button>
+            <button class="game-tab">Product</button>
+            <button class="game-tab">Growth</button>
+          </div>
+
+          <div class="skill-tree-list">
+            <div class="game-skill-item" onclick="openSkillDetail('crossfunctional', this)">
+              <div class="game-skill-icon">⬡</div>
+              <div>
+                <div class="game-skill-name">跨职能补位</div>
+                <div class="game-skill-sub">HCI Research · 技术–产品–增长翻译层</div>
+              </div>
+              <div class="game-skill-pts">
+                <span>COVERAGE +3</span>
+                <span>SPEED +2</span>
+              </div>
+            </div>
+
+            <div class="game-skill-item" onclick="openSkillDetail('product', this)">
+              <div class="game-skill-icon">◈</div>
+              <div>
+                <div class="game-skill-name">产品设计 &amp; 用户调研</div>
+                <div class="game-skill-sub">AI UX · 异常态 · 多轮对话</div>
+              </div>
+              <div class="game-skill-pts">
+                <span>EMPATHY +3</span>
+              </div>
+            </div>
+
+            <div class="game-skill-item" onclick="openSkillDetail('frontend', this)">
+              <div class="game-skill-icon">◈</div>
+              <div>
+                <div class="game-skill-name">前端开发 &amp; 原型落地</div>
+                <div class="game-skill-sub">React · Mock Pipeline · 假设验证</div>
+              </div>
+              <div class="game-skill-pts">
+                <span>BUILD +3</span>
+              </div>
+            </div>
+
+            <div class="game-skill-item" onclick="openSkillDetail('data', this)">
+              <div class="game-skill-icon">◈</div>
+              <div>
+                <div class="game-skill-name">效果评测 &amp; 决策闭环</div>
+                <div class="game-skill-sub">LLM Eval · Prompt 优化 · 数据决策</div>
+              </div>
+              <div class="game-skill-pts">
+                <span>PRECISION +2</span>
+              </div>
+            </div>
+
+            <div class="game-skill-item" onclick="openSkillDetail('growth', this)">
+              <div class="game-skill-icon">◈</div>
+              <div>
+                <div class="game-skill-name">产品冷启动 &amp; 用户增长</div>
+                <div class="game-skill-sub">Cold Start · 反馈飞轮 · 内测运营</div>
+              </div>
+              <div class="game-skill-pts">
+                <span>GROWTH +2</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="skill-tree-list">
-          <div class="game-skill-item" onclick="openSkillDetail('crossfunctional', this)">
-            <div class="game-skill-icon">⬡</div>
-            <div>
-              <div class="game-skill-name">跨职能补位</div>
-              <div class="game-skill-sub">CS Background · 技术–产品翻译层</div>
+        <div class="game-panel game-gear-panel" onclick="openVisionDetail()" onkeydown="handleVisionGearKey(event)" role="button" tabindex="0" aria-label="打开共同 vision">
+          <div class="game-panel-title">Vision Gear</div>
+          <div class="game-gear-grid" aria-label="Vision equipment">
+            <div class="gear-item gear-wallet" aria-label="Agent Wallet" title="Agent Wallet · Open Vision">
+              <span class="gear-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h12.5a2 2 0 0 1 2 2v10.5a2 2 0 0 1-2 2H6a2.5 2.5 0 0 1-2.5-2.5V7.5Z"/>
+                  <path d="M16.5 12H21v4h-4.5a2 2 0 0 1 0-4Z"/>
+                  <path d="M7 9h8"/>
+                  <path d="M17.5 14h.01"/>
+                </svg>
+              </span>
             </div>
-            <div class="game-skill-pts">
-              <span>COVERAGE +3</span>
-              <span>SPEED +2</span>
+            <div class="gear-item gear-credit" aria-label="Agent Credit 信用体系" title="Agent Credit · Trust Layer">
+              <span class="gear-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3.5 19 7v5.2c0 4.2-2.7 6.8-7 8.3-4.3-1.5-7-4.1-7-8.3V7l7-3.5Z"/>
+                  <path d="M9.2 12.2 11 14l4-4.2"/>
+                  <path d="M12 6.8v2.1"/>
+                </svg>
+              </span>
             </div>
-          </div>
-
-          <div class="game-skill-item" onclick="openSkillDetail('product', this)">
-            <div class="game-skill-icon">◈</div>
-            <div>
-              <div class="game-skill-name">产品设计 &amp; 用户调研</div>
-              <div class="game-skill-sub">AI UX · 异常态 · 多轮对话</div>
-            </div>
-            <div class="game-skill-pts">
-              <span>EMPATHY +3</span>
-            </div>
-          </div>
-
-          <div class="game-skill-item" onclick="openSkillDetail('frontend', this)">
-            <div class="game-skill-icon">◈</div>
-            <div>
-              <div class="game-skill-name">前端开发 &amp; 原型落地</div>
-              <div class="game-skill-sub">React · Mock Pipeline · 假设验证</div>
-            </div>
-            <div class="game-skill-pts">
-              <span>BUILD +3</span>
-            </div>
-          </div>
-
-          <div class="game-skill-item" onclick="openSkillDetail('data', this)">
-            <div class="game-skill-icon">◈</div>
-            <div>
-              <div class="game-skill-name">效果评测 &amp; 决策闭环</div>
-              <div class="game-skill-sub">LLM Eval · Prompt 优化 · 数据决策</div>
-            </div>
-            <div class="game-skill-pts">
-              <span>PRECISION +2</span>
-            </div>
-          </div>
-
-          <div class="game-skill-item" onclick="openSkillDetail('growth', this)">
-            <div class="game-skill-icon">◈</div>
-            <div>
-              <div class="game-skill-name">产品冷启动 &amp; 用户增长</div>
-              <div class="game-skill-sub">Cold Start · 反馈飞轮 · 内测运营</div>
-            </div>
-            <div class="game-skill-pts">
-              <span>GROWTH +2</span>
+            <div class="gear-item gear-market" aria-label="A2A Marketplace 服务网络" title="A2A Market · Service Network">
+              <span class="gear-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5.2 10.2h13.6"/>
+                  <path d="M6.6 6.2h10.8l1.4 4H5.2l1.4-4Z"/>
+                  <path d="M7 10.2v4.1"/>
+                  <path d="M17 10.2v4.1"/>
+                  <path d="M9.2 14.3h5.6"/>
+                  <path d="M12 14.3v2.2"/>
+                  <path d="M12 16.5 8.2 19"/>
+                  <path d="M12 16.5 15.8 19"/>
+                  <circle cx="8.2" cy="19" r="1.25"/>
+                  <circle cx="12" cy="16.5" r="1.25"/>
+                  <circle cx="15.8" cy="19" r="1.25"/>
+                </svg>
+              </span>
             </div>
           </div>
         </div>
@@ -1932,6 +2380,46 @@
       <div class="gsd-tags" id="gsdTags"></div>
     </div>
 
+    <!-- Shared vision popup -->
+    <div class="game-vision-backdrop" id="gameVisionBackdrop" onclick="closeVisionDetail()"></div>
+    <div class="game-vision-detail" id="gameVisionDetail" role="dialog" aria-modal="true" aria-labelledby="visionTitle">
+      <div class="vmd-header">
+        <div class="vmd-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h12.5a2 2 0 0 1 2 2v10.5a2 2 0 0 1-2 2H6a2.5 2.5 0 0 1-2.5-2.5V7.5Z"/>
+            <path d="M16.5 12H21v4h-4.5a2 2 0 0 1 0-4Z"/>
+            <path d="M6 5.1 15.5 3l2.2 2"/>
+          </svg>
+        </div>
+        <div class="vmd-titles">
+          <div class="vmd-kicker">Shared Vision · Agent Wallet</div>
+          <div class="vmd-title" id="visionTitle">我们有一样的 vision</div>
+        </div>
+        <button class="vmd-close" onclick="closeVisionDetail()" aria-label="关闭共同 vision">×</button>
+      </div>
+      <div class="vmd-body">
+        <p><strong>我做虾小宝想验证的是：</strong>Agent 不应该只停留在对话入口，而要能在真实世界里独立完成任务闭环：理解目标、调动资源、承担成本、交付结果，并基于履约持续迭代。</p>
+        <p>所以我的判断是，路线不应该一开始就直接做 marketplace，而是先建设 <strong>Agent 能力层</strong>，再沉淀 <strong>Agent Credit</strong>，最终形成 <strong>Agent Marketplace</strong>。</p>
+        <div class="vision-roadmap">
+          <div class="vision-step"><span>01</span><b>Agent 能力增强</b></div>
+          <div class="vision-step"><span>02</span><b>Agent Credit 信用体系</b></div>
+          <div class="vision-step"><span>03</span><b>Agent Marketplace</b></div>
+        </div>
+        <p>这背后的核心假设是：<strong>Agent 的未来会出现本质能力差距</strong>。这种差距不会主要来自基础模型的智商差距，因为模型能力会持续趋同；真正拉开差距的是 Agent 能积累什么资产，包括专有数据、工具权限、资金预算、履约记录和客户关系，以及这些资产能否转化成可复用、可验证的稳定履约能力。</p>
+        <div class="vision-scenario">
+          <strong>比如“嗅嗅豹”这个场景，如果 Agent 拥有 100 万的可支配预算，它就可以：</strong>
+          <ol>
+            <li>先调研商品库的建设方案，包括数据来源、字段结构、更新频率和质量标准</li>
+            <li>采购和部署数据库、爬虫、检索和报告生成能力，完成一期产品建设</li>
+            <li>拿着初版服务去寻找客户，验证真实需求、交付价值和付费意愿</li>
+            <li>通过收费回款沉淀履约记录，再把收入继续投入到数据覆盖、检索质量和报告生产能力里</li>
+          </ol>
+        </div>
+        <p>这样它就不只是一次性调用工具，而是形成“能力建设 → 产品一期 → 找客户 → 收费回款 → 再投入能力建设”的商业化循环。长期看，很多 SaaS 可能会从“人订阅软件工具”迁移到 <strong>Agent-delivered service</strong>：用户寻找能交付结果的 Agent，Agent 也会通过 A2A 网络调用、采购和组合其他 Agent 的能力。</p>
+        <div class="vision-final">为了实现这个未来，第一块基础设施必须是 Agent 钱包：它让预算、授权、支付、凭证、履约、结算和追责变得可编程、可审计。钱包之上，Agent Credit 和 A2A Marketplace 才会成为真正可交易、可扩张的服务网络。</div>
+      </div>
+    </div>
+
   </section>
 
   <div class="shell">
@@ -1951,11 +2439,11 @@
         </div>
         <div class="metric">
           <b>02 试跑暴露的问题</b>
-          <span>运行接入、交易控制、商业闭环三类产品问题暴露：跨框架一致性不足、高风险动作缺少标准状态机、支付成功不等于任务成功。</span>
+          <span>运行接入、交易控制、商业闭环三类产品问题暴露：跨框架一致性不足、高风险动作缺少标准状态机，更关键的是缺少可被 Agent 稳定调用的优质供给。</span>
         </div>
         <div class="metric">
           <b>03 行业洞察</b>
-          <span>Agentic Commerce 需要六类基建：身份、授权、交易语义、支付凭证、风控责任、生态连接。Google AP2 用 Mandate + Trusted Surface + Evidence Chain 给出协议样板。</span>
+          <span>交易入口正从 App / 搜索迁移到 Agent 意图。短期最关键的是授权、交易语义和生态连接；竞品正在抢商户供给、Agent 钱包和微支付入口，AI 付的机会在钱包信任面与支付宝服务网络。</span>
         </div>
         <div class="metric">
           <b>04 产品设计展望</b>
@@ -2130,14 +2618,14 @@ https://aipayapi.alipay.com/merchant/aipay/introduce</pre>
         <div class="issue-group">
           <h3>三、商业闭环</h3>
           <article class="card">
-            <span class="tag">Fulfillment</span>
-            <strong>支付成功不等于任务成功</strong>
-            <p>真正闭环还包括资源获取、履约回执、退款、补偿和问题反馈。AI 付要记录“为什么允许付款”和“付款后服务是否完成”。</p>
+            <span class="tag">Supply Quality</span>
+            <strong>缺少可被 Agent 调用的优质供给</strong>
+            <p>AI 付跑通了支付链路，但商业闭环更取决于有没有足够多高质量、结构化、可信、可履约的商户与服务供给。</p>
           </article>
           <article class="card">
-            <span class="tag">Unit Economics</span>
-            <strong>单位交易成本需要下降</strong>
-            <p>这次可见 token 粗估 7-8 万，对 0.01 元 demo 交易明显偏高。生产态必须通过 Hosted Runtime、缓存和结构化输出降本。</p>
+            <span class="tag">Fulfillment</span>
+            <strong>支付成功不等于任务成功</strong>
+            <p>供给接入之后，还要追踪资源获取、服务完成、退款补偿和问题反馈，形成“意图 → 供给 → 授权 → 支付 → 履约”的完整闭环。</p>
           </article>
         </div>
       </div>
@@ -2198,43 +2686,100 @@ https://aipayapi.alipay.com/merchant/aipay/introduce</pre>
       </div>
       <div class="cards three">
         <article class="card">
-          <span class="tag">01 · Identity</span>
-          <strong>身份基建</strong>
+          <div class="card-head">
+            <span class="tag">01 · Identity</span>
+          </div>
+          <strong>Identity 身份</strong>
+          <div class="card-subtitle">这个 Agent 到底是谁？</div>
           <p>识别 Agent 是谁、属于哪个用户、来自哪个平台、权限是否被撤销。传统身份只识别人和商户；Agentic Commerce 增加第三类主体——代理。需要 Agent registry、attestation 和 reputation 能力区分可信 Agent 与恶意自动化脚本。</p>
         </article>
-        <article class="card">
-          <span class="tag">02 · Authorization</span>
-          <strong>授权基建</strong>
-          <p>授权对象不只是"支付"，而是一组任务边界：金额上限、时间范围、商户范围、商品范围、替代规则、确认规则、支付工具、撤销规则。Google AP2 用 Mandate（防篡改签名授权合约）承载这些约束，是授权基建的最佳参考实现。</p>
+        <article class="card priority-card">
+          <div class="card-head">
+            <span class="tag">02 · Authorization</span>
+            <span class="priority-badge">关键优先</span>
+          </div>
+          <strong>Authorization 授权</strong>
+          <div class="card-subtitle">用户到底允许 Agent 做什么？</div>
+          <p>最先决定 Agent 会不会越权。授权对象不只是"支付"，而是一组任务边界：金额上限、时间范围、商户范围、商品范围、替代规则、确认规则、支付工具、撤销规则。Google AP2 用 Mandate 承载这些约束。</p>
+        </article>
+        <article class="card priority-card">
+          <div class="card-head">
+            <span class="tag">03 · Semantics</span>
+            <span class="priority-badge">关键优先</span>
+          </div>
+          <strong>Semantics 交易语义</strong>
+          <div class="card-subtitle">这笔钱到底买什么？</div>
+          <p>决定 Agent 是不是买对了东西。支付必须绑定"买什么"，不能只绑定"付多少钱"。Checkout 内容需要结构化锁定：商品明细、数量、价格、商户身份、履约方式、售后规则、订单 hash。</p>
         </article>
         <article class="card">
-          <span class="tag">03 · Semantics</span>
-          <strong>交易语义基建</strong>
-          <p>Agent 支付必须绑定"买什么"，不能只绑定"付多少钱"。Checkout 内容需要结构化锁定：商品明细、数量、价格、商户身份、履约方式、售后规则、订单 hash。同样 100 元，买演唱会票和买会员套餐的风险完全不同。</p>
-        </article>
-        <article class="card">
-          <span class="tag">04 · Credentials</span>
-          <strong>支付凭证基建</strong>
+          <div class="card-head">
+            <span class="tag">04 · Credentials</span>
+          </div>
+          <strong>Credentials 支付凭证</strong>
+          <div class="card-subtitle">Agent 怎么安全地完成支付？</div>
           <p>Agent 不应拿到完整账户权限，而是 scoped token：只能给指定商户、指定金额范围、指定 checkout hash 使用，只能消费一次。Mastercard Agent Pay、Visa Intelligent Commerce 均强调更细粒度的 token framework 和 spending limits。</p>
         </article>
         <article class="card">
-          <span class="tag">05 · Risk &amp; Accountability</span>
-          <strong>风控责任基建</strong>
+          <div class="card-head">
+            <span class="tag">05 · Risk &amp; Accountability</span>
+          </div>
+          <strong>Risk &amp; Accountability 风控责任</strong>
+          <div class="card-subtitle">出问题时怎么识别和追责？</div>
           <p>新型风险：Agent 越权购买、Prompt injection 诱导错误决策、Agent 重试重复扣款、授权被 replay。风控对象从"交易风险"扩展到"Agent 行为风险"，需要 mandate risk scoring、intent-consistency check 和 runtime verification。</p>
         </article>
-        <article class="card">
-          <span class="tag">06 · Ecosystem</span>
-          <strong>生态连接基建</strong>
-          <p>Agent 要完成交易，需要结构化商品 / 服务 API、Agent-ready checkout、标准化库存 / 价格 / 配送 / 售后接口，以及商户可信评分和履约回执。Google UCP 面向完整商业生命周期；AP2 聚焦授权、支付和证据链。</p>
+        <article class="card priority-card">
+          <div class="card-head">
+            <span class="tag">06 · Ecosystem</span>
+            <span class="priority-badge">关键优先</span>
+          </div>
+          <strong>Ecosystem 生态连接</strong>
+          <div class="card-subtitle">Agent 能买到什么优质服务？</div>
+          <p>决定 AI 付能不能商业化做大。Agent 要完成交易，需要结构化商品 / 服务 API、Agent-ready checkout、标准化库存 / 价格 / 配送 / 售后接口，以及商户可信评分和履约回执。</p>
         </article>
       </div>
+      <div class="chain-block" id="competitors">
+        <h3>C · 竞品分析：不同玩家正在切不同入口</h3>
+        <p>从竞品看，海外玩家并不是只做“AI 支付按钮”，而是在分别抢占商户供给、Agent 钱包、微支付协议和云端托管运行时。对 AI 付的启示是：支付宝既要把授权和支付做稳，也要尽快把优质供给结构化成 Agent 可调用的服务网络。</p>
+      </div>
+      <div class="competitor-wrap">
+        <table class="competitor-table">
+          <thead>
+            <tr>
+              <th>产品</th>
+              <th>最适场景</th>
+              <th>核心能力</th>
+              <th>当前限制</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Stripe Agentic Commerce Suite</td>
+              <td>商户希望在 Chat、搜索、Agent 平台里直接卖货。</td>
+              <td>商品目录、库存与价格同步、Agent Checkout、Shared Payment Token；同时覆盖 ACP/UCP，以及面向 API 的 MPP/x402；还可以给 Agent 发行带额度控制的虚拟卡。</td>
+              <td>当前主要面向美国；部分自定义接入仍需申请或排队。</td>
+            </tr>
+            <tr>
+              <td>Crossmint Agentic Payments</td>
+              <td>开发通用购物、旅行预订、采购类 Agent。</td>
+              <td>用户现有银行卡授权、非托管稳定币钱包、额度和商户白名单、Passkey 授权、Browser Checkout、Fast Checkout、x402、MPP；同时适配 Visa Intelligent Commerce 和 Mastercard Agent Pay。</td>
+              <td>部分网络能力仍处于持续开放阶段；Fast Checkout 的主要商户覆盖目前偏美国。</td>
+            </tr>
+            <tr>
+              <td>Amazon Bedrock AgentCore Payments</td>
+              <td>Agent 按次购买 API、MCP、数据、内容或其他 Agent 服务。</td>
+              <td>托管钱包连接、x402 协商、稳定币支付、会话级支出上限、交易日志与链路观测；首批接入 Coinbase 和 Stripe 钱包基础设施。</td>
+              <td>当前是 Preview；主要解决数字资源微支付，不适合直接替代完整电商支付和退款体系。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div class="note">
-        支付宝在六类基建中均有积累（身份账户体系、签约代扣、预授权 scoped token、反欺诈风控），但需要被重新产品化，才能面向 Agent 主体开放，而非只服务人类用户。
+        简单归纳：Stripe 更偏商户侧供给和 checkout，Crossmint 更偏通用 Agent 支付编排，Amazon AgentCore Payments 更偏云端 Agent 调用 API / MCP / 数据内容时的微支付。AI 付的差异化机会在于支付宝已有的钱包信任面、生活服务供给和履约网络。
       </div>
 
-      <!-- ── C. AP2 解读 ── -->
+      <!-- ── D. AP2 解读 ── -->
       <div class="chain-block" id="ap2">
-        <h3>C · AP2 解读：Mandate + Trusted Surface + Evidence Chain</h3>
+        <h3>D · AP2 解读：Mandate + Trusted Surface + Evidence Chain</h3>
         <p>Google Agent Payments Protocol（AP2）不是新支付方式，也不替代卡组织或钱包，而是定义 Agent 代表用户交易时的授权与证据协议。2026 年捐给 FIDO Alliance，目标是行业标准，而非单点产品。</p>
       </div>
       <div class="infra-callout">
@@ -2383,9 +2928,6 @@ https://aipayapi.alipay.com/merchant/aipay/introduce</pre>
         <div class="node"><b>服务编排</b><span>让 Agent 能组合多个支付宝服务完成任务，而不是只调用单个支付工具。</span></div>
         <div class="node"><b>履约协同</b><span>接入商户履约、退款、申诉、问题反馈，让任务成功不止等于支付成功。</span></div>
         <div class="node"><b>生态指标</b><span>从支付成功率扩展到任务完成率、授权转化、异常恢复时间和用户信任度。</span></div>
-      </div>
-      <div class="note">
-        长期 Action：不是让 <code>SKILL.md</code> 自己完成状态机产品化，而是在 Skill 之上形成 Agent Payment Runtime / Ant Service Agent Runtime。前者先把支付这类高风险交易动作做稳，后者再把支付宝生态里的服务发现、跨域授权、服务编排、商户履约和责任追踪做成平台能力。用 Agent Infrastructure 的语言讲，就是把 7「Action Gateway」做成行业标准，把 8「真实世界副作用」纳入可授权、可确认、可审计、可补偿的治理体系。
       </div>
     </section>
 
@@ -2849,13 +3391,14 @@ const SKILL_DATA = {
     name: '跨职能补位',
     nameEn: 'Cross-Functional Bridge',
     pts: ['COVERAGE +3', 'SPEED +2'],
-    lore: 'CS 背景使我在 AI 产品团队中能充当真正的技术–产品翻译层：读懂 Prompt 设计的边界、理解模型能力瓶颈，也能直接写前端 Demo 对齐验证目标。在 4–6 人小团队中，一人覆盖产品定义、原型实现、数据评测三个环节，让迭代不因角色空缺卡住，维持「一周一版本」的节奏。',
+    lore: '人机交互研究背景让我会先从用户和交互任务理解 AI 产品：用户为什么信任 Agent、哪里需要确认、失败时如何解释。再叠加 CS 底座和用户增长运营经验，我在 4–6 人小团队里可以覆盖产品定义、原型实现、数据评测、增长运营四个环节，既能读懂 Prompt 与模型边界，也能写前端 Demo、设计反馈飞轮，让迭代不因角色空缺卡住。',
     attrs: [
       { label: 'Role Coverage', pct: 92 },
       { label: 'Iteration Speed', pct: 85 },
-      { label: 'Tech-Product Bridge', pct: 90 },
+      { label: 'HCI Insight', pct: 90 },
+      { label: 'Growth Ops', pct: 84 },
     ],
-    tags: ['CS 底座', 'Prompt 理解', '技术翻译层', '前端实现', '多角色覆盖'],
+    tags: ['HCI 研究', 'CS 底座', '产品定义', '前端实现', '数据评测', '增长运营'],
   },
   product: {
     icon: '◈',
@@ -2911,7 +3454,26 @@ const SKILL_DATA = {
   },
 };
 
+function openVisionDetail() {
+  closeSkillDetail();
+  document.getElementById('gameVisionBackdrop').classList.add('open');
+  document.getElementById('gameVisionDetail').classList.add('open');
+}
+
+function closeVisionDetail() {
+  document.getElementById('gameVisionBackdrop').classList.remove('open');
+  document.getElementById('gameVisionDetail').classList.remove('open');
+}
+
+function handleVisionGearKey(e) {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    openVisionDetail();
+  }
+}
+
 function openSkillDetail(key, el) {
+  closeVisionDetail();
   const skill = SKILL_DATA[key];
   if (!skill) return;
   document.querySelectorAll('.game-skill-item').forEach(item => item.classList.remove('gs-active'));
@@ -2970,7 +3532,12 @@ function closeSkillDetail() {
   document.getElementById('skillConnectSvg').classList.remove('open');
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSkillDetail(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSkillDetail();
+    closeVisionDetail();
+  }
+});
 </script>
 </body>
 </html>
